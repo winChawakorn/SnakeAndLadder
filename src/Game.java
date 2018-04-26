@@ -7,16 +7,15 @@ public class Game {
 	private int currentPlayerIndex;
 	private boolean ended;
 
-	public Game() {
-		players = new Player[2];
-		players[0] = new Player("P1");
-		players[1] = new Player("P2");
-		die = new Die();
+	public Game(int numPlayer) {
+		players = new Player[numPlayer];
 		board = new Board();
+		die = new Die();
 		ended = false;
-
-		board.addPiece(players[0].getPiece(), 0);
-		board.addPiece(players[1].getPiece(), 0);
+		for (int i = 0; i < numPlayer; i++) {
+			players[i] = new Player("P" + (i + 1));
+			board.addPiece(players[i].getPiece(), 0);
+		}
 	}
 
 	public boolean isEnd() {
