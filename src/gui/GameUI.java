@@ -20,7 +20,7 @@ public class GameUI {
 
 	private void init() {
 		frame.setResizable(false);
-		frame.setSize(1105, 835);
+		frame.setSize(1025, 753);
 		setPanel(new MenuPane());
 	}
 

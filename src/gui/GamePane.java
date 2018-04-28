@@ -25,17 +25,21 @@ public class GamePane extends JPanel {
 		setLayout(null);
 		ImageIcon boardImage = new ImageIcon(this.getClass().getResource("/img/board.png"));
 		JLabel board = new JLabel(boardImage);
-		board.setBounds(300, 0, 800, 800);
+		board.setBounds(300, 0, 720, 720);
 		add(board);
 
 		JPanel controller = new JPanel();
-		controller.setBounds(0, 0, 300, 800);
+		controller.setBounds(0, 0, 300, 720);
 		controller.setBackground(Color.PINK);
 		controller.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 		JLabel label = new JLabel("Snake and Ladder");
 		label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
-		
+
+		JLabel turn = new JLabel("Player1 turn");
+		turn.setForeground(Color.BLUE);
+		turn.setFont(new Font("Comic Sans MS", Font.PLAIN, 30));
 		controller.add(label);
+		controller.add(turn);
 		add(controller);
 	}
 }
