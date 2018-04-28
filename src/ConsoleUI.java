@@ -22,14 +22,20 @@ public class ConsoleUI {
 		while (!game.isEnd()) {
 			System.out.println("------------------");
 			System.out.println(game.currentPlayer().getName() + "'s turn");
-			System.out.println("Position: " + game.currentPlayerPosition());
+			int position = game.currentPlayerPosition();
+			System.out.println("Position: " + position);
+			// TODO if player is on the FREEZE QUARE, print something and continue;
 			System.out.println("Please hit enter to roll a die.");
-			scanner.nextLine();
+			String enter = scanner.nextLine();
 			int face = game.currentPlayerRollDice();
+			if (!enter.equals("")) {
+				face = Integer.parseInt(enter);
+			}
 			System.out.println("Dice face = " + face);
 			game.currentPlayeMovePiece(face);
 			if (game.currentPlayerWins()) {
-				System.out.println("Position: " + game.currentPlayerName() + " WINS!");
+				System.out.println(
+						"New position: " + game.currentPlayerPosition() + " " + game.currentPlayerName() + " WINS!");
 				game.end();
 				while (true) {
 					System.out.print("Menu (p)lay again, (r)eplay, (e)xit : ");
@@ -39,7 +45,7 @@ public class ConsoleUI {
 						start();
 						return;
 					case "r":
-						// TODO replay
+						// TODO REPLAY
 						return;
 					case "e":
 						System.out.println("Bye");
@@ -51,6 +57,16 @@ public class ConsoleUI {
 					}
 				}
 			} else {
+				Square square = game.currentPlayerSquare();
+				if (square instanceof SpecialSquare) {
+					if (square instanceof Ladder)
+						System.out.println("Great! you found a Ladder!");
+					if (square instanceof Snake)
+						System.out.println("Oh no! you found a Snake!");
+					SpecialSquare ss = (SpecialSquare) square;
+					game.currentPlayeMovePiece(ss.getSteps());
+				}
+				System.out.println("New position: " + game.currentPlayerPosition());
 				game.switchPlayer();
 			}
 		}

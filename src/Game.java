@@ -50,6 +50,10 @@ public class Game {
 		currentPlayer().movePiece(board, steps);
 	}
 
+	public Square currentPlayerSquare() {
+		return board.getSquare(currentPlayer().getPiece());
+	}
+
 	public boolean currentPlayerWins() {
 		return board.pieceIsAtGoal(currentPlayer().getPiece());
 	}
