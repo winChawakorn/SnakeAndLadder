@@ -1,3 +1,4 @@
+package game;
 
 public class Board {
 	public static final int SIZE = 64;
