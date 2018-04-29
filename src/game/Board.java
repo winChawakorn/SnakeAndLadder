@@ -1,7 +1,7 @@
 package game;
 
 public class Board {
-	public static final int SIZE = 64;
+	public static final int SIZE = 101;
 
 	private Square[] squares;
 
@@ -10,7 +10,7 @@ public class Board {
 		for (int i = 0; i < squares.length; i++) {
 			squares[i] = new Square(i);
 		}
-		squares[4] = new Ladder(4, 8);
+		// squares[4] = new Ladder(4, 8);
 		squares[squares.length - 1].setGoal(true);
 	}
 
@@ -44,8 +44,4 @@ public class Board {
 	public Square getSquare(Piece piece) {
 		return squares[getPiecePosition(piece)];
 	}
-
-	// public boolean pieceIsOnSpecialSquare(Piece piece) {
-	// return squares[getPiecePosition(piece)].
-	// }
 }

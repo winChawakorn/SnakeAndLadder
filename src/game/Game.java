@@ -19,6 +19,10 @@ public class Game {
 		}
 	}
 
+	public int getNumPlayer() {
+		return players.length;
+	}
+
 	public boolean isEnd() {
 		return ended;
 	}
