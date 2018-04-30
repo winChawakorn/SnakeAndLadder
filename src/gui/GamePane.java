@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.HashMap;
@@ -11,10 +12,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import game.FreezeSquare;
 import game.Game;
 import game.Player;
 import game.SpecialSquare;
@@ -24,6 +27,7 @@ public class GamePane extends JPanel {
 	private Map<Player, JLabel> players;
 	private JButton roll;
 	private JLabel turn;
+	private JTextArea currentStatus;
 
 	public GamePane(Game game) {
 		super();
@@ -72,11 +76,20 @@ public class GamePane extends JPanel {
 
 		Font font = new Font("Comic Sans MS", Font.PLAIN, 30);
 		turn = new JLabel(game.currentPlayerName() + "'s turn", SwingConstants.CENTER);
-		turn.setForeground(Color.BLUE);
+		turn.setForeground(game.currentPlayer().getColor());
 		turn.setFont(font);
 		turn.setBorder(BorderFactory.createEmptyBorder(80, 0, 0, 0));
 		turn.setPreferredSize(new Dimension(300, 180));
 
+		font = new Font("Comic Sans MS", Font.PLAIN, 20);
+		currentStatus = new JTextArea("Click roll button to play.........play");
+		currentStatus.setPreferredSize(new Dimension(260, 200));
+		currentStatus.setForeground(game.currentPlayer().getColor());
+		currentStatus.setFont(font);
+		currentStatus.setBackground(Color.PINK);
+		currentStatus.setLineWrap(true);
+		currentStatus.setWrapStyleWord(true);
+		
 		JPanel dicePane = new JPanel();
 		dicePane.setPreferredSize(new Dimension(300, 120));
 		dicePane.setBackground(new Color(0, 0, 0, 0));
@@ -92,6 +105,9 @@ public class GamePane extends JPanel {
 			GameUI.setPanel(new GamePane(new Game(game.getNumPlayer())));
 		});
 
+		JPanel rollPane = new JPanel();
+		rollPane.setPreferredSize(new Dimension(300, 80));
+		rollPane.setBackground(new Color(0, 0, 0, 0));
 		roll = new JButton("Roll");
 		roll.setFont(font);
 		roll.setBackground(Color.LIGHT_GRAY);
@@ -99,7 +115,7 @@ public class GamePane extends JPanel {
 			roll.setEnabled(false);
 			int oldNumber = game.currentPlayerPosition();
 			int face = game.currentPlayerRollDice();
-			face = 2;
+//			face = 2;
 			dice.setText(face + "");
 			game.currentPlayeMovePiece(face);
 			move(game.currentPlayer(), game.currentPlayerPosition(), oldNumber);
@@ -110,10 +126,13 @@ public class GamePane extends JPanel {
 				turn.setText(game.currentPlayerName() + " WINS!");
 			}
 		});
+		rollPane.add(roll);
+		
 		controller.add(label);
 		controller.add(turn);
 		controller.add(dicePane);
-		controller.add(roll);
+		controller.add(rollPane);
+		controller.add(currentStatus);
 		add(controller);
 	}
 
@@ -173,7 +192,12 @@ public class GamePane extends JPanel {
 					} else {
 						roll.setEnabled(true);
 						game.switchPlayer();
-						turn.setText(game.currentPlayerName() + "'s turn");
+						if (game.currentPlayerSquare() instanceof FreezeSquare) {
+							
+							game.switchPlayer();
+						}
+						turn.setForeground(game.currentPlayer().getColor());
+						turn.setText(game.currentPlayerName() + "'s turn" );
 					}
 				}
 			}
