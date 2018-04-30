@@ -23,9 +23,7 @@ public class GamePane extends JPanel {
 	private Game game;
 	private Map<Player, JLabel> players;
 	private JButton roll;
-	private JButton playAgain;
 	private JLabel turn;
-	private JPanel controller;
 
 	public GamePane(Game game) {
 		super();
@@ -65,7 +63,7 @@ public class GamePane extends JPanel {
 		board.setBounds(300, 0, 700, 720);
 		add(board);
 
-		controller = new JPanel();
+		JPanel controller = new JPanel();
 		controller.setBounds(0, 0, 300, 720);
 		controller.setBackground(Color.PINK);
 		controller.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
@@ -87,7 +85,7 @@ public class GamePane extends JPanel {
 		dice.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 50));
 		dicePane.add(dice);
 
-		playAgain = new JButton("Play again");
+		JButton playAgain = new JButton("Play again");
 		playAgain.setFont(font);
 		playAgain.setBackground(Color.WHITE);
 		playAgain.addActionListener((e) -> {
@@ -99,7 +97,6 @@ public class GamePane extends JPanel {
 		roll.setBackground(Color.LIGHT_GRAY);
 		roll.addActionListener((e) -> {
 			roll.setEnabled(false);
-			turn.setText(game.currentPlayerName() + "'s turn");
 			int oldNumber = game.currentPlayerPosition();
 			int face = game.currentPlayerRollDice();
 			face = 2;
@@ -173,10 +170,11 @@ public class GamePane extends JPanel {
 						SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
 						move(player, ss.getDestination(), -1);
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
-						game.switchPlayer();
-					} else
+					} else {
 						roll.setEnabled(true);
-					game.switchPlayer();
+						game.switchPlayer();
+						turn.setText(game.currentPlayerName() + "'s turn");
+					}
 				}
 			}
 		});
