@@ -100,10 +100,13 @@ public class GamePane extends JPanel {
 		roll.setBackground(Color.LIGHT_GRAY);
 		roll.addActionListener((e) -> {
 			roll.setEnabled(false);
+			turn.setText(game.currentPlayerName() + "'s turn");
+			int oldNumber = game.currentPlayerPosition();
 			int face = game.currentPlayerRollDice();
+			face = 2;
 			dice.setText(face + "");
 			game.currentPlayeMovePiece(face);
-			move(game.currentPlayer(), game.currentPlayerPosition());
+			move(game.currentPlayer(), game.currentPlayerPosition(), oldNumber);
 			if (game.currentPlayerWins()) {
 				roll.setEnabled(false);
 				controller.remove(roll);
@@ -118,16 +121,19 @@ public class GamePane extends JPanel {
 		add(controller);
 	}
 
-	private void move(Player player, int number) {
+	private void move(Player player, int toNumber, int fromNumber) {
 		Timer timer = new Timer(10, null);
 		timer.addActionListener((e) -> {
+			int next = fromNumber + 1;
+			if (fromNumber == -1)
+				next = toNumber;
 			JLabel piece = players.get(player);
 			int dx = 5;
-			int numDestination = number % 10;
-			if (number % 10 == 0)
+			int numDestination = next % 10;
+			if (next % 10 == 0)
 				numDestination = 10;
-			if (((number - 1) / 10) % 2 != 0)
-				numDestination = 10 - ((number - 1) % 10);
+			if (((next - 1) / 10) % 2 != 0)
+				numDestination = 10 - ((next - 1) % 10);
 			int destinationX = 240 + (numDestination * 70);
 			boolean xIsDone = piece.getX() >= destinationX;
 			if (piece.getX() > destinationX) {
@@ -137,7 +143,7 @@ public class GamePane extends JPanel {
 			if (!xIsDone) {
 				piece.setLocation(piece.getX() + dx, piece.getY());
 			}
-			int rowNum = 10 - ((number - 1) / 10);
+			int rowNum = 10 - ((next - 1) / 10);
 			int destinationY = (rowNum * 70) - 55;
 			boolean yIsDone = piece.getY() <= destinationY;
 			int dy = -5;
@@ -148,15 +154,23 @@ public class GamePane extends JPanel {
 			if (!yIsDone)
 				piece.setLocation(piece.getX(), piece.getY() + dy);
 			if (xIsDone && yIsDone) {
-				if (game.currentPlayerSquare() instanceof SpecialSquare) {
-					SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
-					move(player, ss.getDestination());
-					game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e1) {
+				}
+				timer.stop();
+				if (next != toNumber)
+					move(player, toNumber, next);
+				else {
+					if (game.currentPlayerSquare() instanceof SpecialSquare) {
+						SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
+						move(player, ss.getDestination(), -1);
+						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
+						game.switchPlayer();
+					} else
+						roll.setEnabled(true);
 					game.switchPlayer();
 				}
-				roll.setEnabled(true);
-				game.switchPlayer();
-				timer.stop();
 			}
 		});
 		timer.start();
