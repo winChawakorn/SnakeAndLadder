@@ -24,6 +24,9 @@ public class GamePane extends JPanel {
 	private Game game;
 	private Map<Player, JLabel> players;
 	private JButton roll;
+	private JButton playAgain;
+	private JLabel turn;
+	private JPanel controller;
 
 	public GamePane(Game game) {
 		super();
@@ -63,7 +66,7 @@ public class GamePane extends JPanel {
 		board.setBounds(300, 0, 700, 720);
 		add(board);
 
-		JPanel controller = new JPanel();
+		controller = new JPanel();
 		controller.setBounds(0, 0, 300, 720);
 		controller.setBackground(Color.PINK);
 		controller.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
@@ -71,7 +74,7 @@ public class GamePane extends JPanel {
 		label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
 
 		Font font = new Font("Comic Sans MS", Font.PLAIN, 30);
-		JLabel turn = new JLabel(game.currentPlayerName() + "'s turn", SwingConstants.CENTER);
+		turn = new JLabel(game.currentPlayerName() + "'s turn", SwingConstants.CENTER);
 		turn.setForeground(Color.BLUE);
 		turn.setFont(font);
 		turn.setBorder(BorderFactory.createEmptyBorder(80, 0, 0, 0));
@@ -85,22 +88,29 @@ public class GamePane extends JPanel {
 		dice.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 50));
 		dicePane.add(dice);
 
+		playAgain = new JButton("Play again");
+		playAgain.setFont(font);
+		playAgain.setBackground(Color.WHITE);
+		playAgain.addActionListener((e) -> {
+			GameUI.setPanel(new GamePane(new Game(game.getNumPlayer())));
+		});
+
 		roll = new JButton("Roll");
 		roll.setFont(font);
 		roll.setBackground(Color.LIGHT_GRAY);
 		roll.addActionListener((e) -> {
 			roll.setEnabled(false);
 			int face = game.currentPlayerRollDice();
-			game.currentPlayeMovePiece(face);
 			dice.setText(face + "");
+			game.currentPlayeMovePiece(face);
 			move(game.currentPlayer(), game.currentPlayerPosition());
 			if (game.currentPlayerWins()) {
-				roll.setVisible(false);
 				roll.setEnabled(false);
+				controller.remove(roll);
+				controller.add(playAgain);
 				turn.setText(game.currentPlayerName() + " WINS!");
 			}
 		});
-
 		controller.add(label);
 		controller.add(turn);
 		controller.add(dicePane);
@@ -144,8 +154,8 @@ public class GamePane extends JPanel {
 					game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
 					game.switchPlayer();
 				}
-				game.switchPlayer();
 				roll.setEnabled(true);
+				game.switchPlayer();
 				timer.stop();
 			}
 		});
