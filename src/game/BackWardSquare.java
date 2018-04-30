@@ -1,15 +1,21 @@
 package game;
 
-public class BackWardSquare extends SpecialSquare {
+public class BackWardSquare extends Square {
 
-	public BackWardSquare(int number, int destination) {
-		super(number, destination);
+	private int distance;
+
+	public BackWardSquare(int number) {
+		super(number);
 	}
 
 	@Override
 	public String toString() {
 		return "You reach backward square number " + super.getNumber() + ". Move back to number "
-				+ super.getDestination();
+				+ (super.getNumber() - this.distance);
+	}
+
+	public void setDistance(int distance) {
+		this.distance = distance;
 	}
 
 }
