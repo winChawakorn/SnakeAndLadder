@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import game.Game;
+import game.Piece;
 import game.Player;
 import game.Snake;
 import game.SpecialSquare;
@@ -118,6 +119,11 @@ public class GamePane extends JPanel {
 		add(controller);
 	}
 
+	/**
+	 * move piece of input player
+	 * @param player who his piece be moved
+	 * @param number of squares to move
+	 */
 	private void move(Player player, int number) {
 		Timer timer = new Timer(10, null);
 		timer.addActionListener((e) -> {
