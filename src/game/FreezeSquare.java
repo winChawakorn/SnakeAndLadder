@@ -1,11 +1,11 @@
 package game;
 
-public class FreezeSquare extends SpecialSquare {
+public class FreezeSquare extends Square{
 
 	public int skipedCount;
 	
-	public FreezeSquare(int number, int steps) {
-		super(number, steps);
+	public FreezeSquare(int number) {
+		super(number);
 		skipedCount = 1;
 	}
 

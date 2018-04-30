@@ -10,20 +10,20 @@ public class Board {
 		for (int i = 0; i < squares.length; i++) {
 			squares[i] = new Square(i);
 		}
-		squares[3] = new FreezeSquare(3, 3);
-		squares[20] = new FreezeSquare(20, 20);
-		squares[41] = new FreezeSquare(41, 41);
-		squares[50] = new FreezeSquare(50, 50);
-		squares[65] = new FreezeSquare(70, 70);
-		squares[86] = new FreezeSquare(86, 86);
-		squares[97] = new FreezeSquare(97, 97);
-		squares[10] = new BackWardSquare(10, 6);
-		squares[18] = new BackWardSquare(18, 14);
-		squares[37] = new BackWardSquare(37, 34);
-		squares[45] = new BackWardSquare(45, 41);
-		squares[69] = new BackWardSquare(69, 60);
-		squares[77] = new BackWardSquare(77, 75);
-		squares[91] = new BackWardSquare(91, 87);
+		squares[3] = new FreezeSquare(3);
+		squares[20] = new FreezeSquare(20);
+		squares[41] = new FreezeSquare(41);
+		squares[50] = new FreezeSquare(50);
+		squares[65] = new FreezeSquare(70);
+		squares[86] = new FreezeSquare(86);
+		squares[97] = new FreezeSquare(97);
+		squares[10] = new BackWardSquare(10);
+		squares[18] = new BackWardSquare(18);
+		squares[37] = new BackWardSquare(37);
+		squares[45] = new BackWardSquare(45);
+		squares[69] = new BackWardSquare(69);
+		squares[77] = new BackWardSquare(77);
+		squares[91] = new BackWardSquare(91);
 		squares[2] = new Ladder(2, 38);
 		squares[7] = new Ladder(7, 14);
 		squares[8] = new Ladder(8, 31);
@@ -45,6 +45,7 @@ public class Board {
 		squares[89] = new Snake(89, 68);
 		squares[92] = new Snake(92, 88);
 		squares[95] = new Snake(95, 75);
+
 		squares[squares.length - 1].setGoal(true);
 	}
 

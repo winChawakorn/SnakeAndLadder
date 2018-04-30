@@ -17,10 +17,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import game.BackWardSquare;
 import game.FreezeSquare;
 import game.Game;
 import game.Player;
 import game.SpecialSquare;
+import game.Square;
 
 public class GamePane extends JPanel {
 	private Game game;
@@ -82,14 +84,15 @@ public class GamePane extends JPanel {
 		turn.setPreferredSize(new Dimension(300, 180));
 
 		font = new Font("Comic Sans MS", Font.PLAIN, 20);
-		currentStatus = new JTextArea("Click roll button to play.........play");
+		currentStatus = new JTextArea("Click roll button to play");
 		currentStatus.setPreferredSize(new Dimension(260, 200));
 		currentStatus.setForeground(game.currentPlayer().getColor());
 		currentStatus.setFont(font);
 		currentStatus.setBackground(Color.PINK);
 		currentStatus.setLineWrap(true);
 		currentStatus.setWrapStyleWord(true);
-		
+		currentStatus.setEditable(false);
+
 		JPanel dicePane = new JPanel();
 		dicePane.setPreferredSize(new Dimension(300, 120));
 		dicePane.setBackground(new Color(0, 0, 0, 0));
@@ -117,7 +120,15 @@ public class GamePane extends JPanel {
 			int face = game.currentPlayerRollDice();
 			dice.setText(face + "");
 			game.currentPlayeMovePiece(face);
+			Square cs = game.currentPlayerSquare();
 			move(game.currentPlayer(), game.currentPlayerPosition(), oldNumber);
+			// set current status
+			if (cs instanceof FreezeSquare || cs instanceof SpecialSquare) {
+				currentStatus.setText(cs.toString());
+			} else {
+				currentStatus.setText("You go from number " + oldNumber + " to number " + game.currentPlayerPosition());
+			}
+			//
 			if (game.currentPlayerWins()) {
 				roll.setEnabled(false);
 				controller.remove(roll);
@@ -126,7 +137,7 @@ public class GamePane extends JPanel {
 			}
 		});
 		rollPane.add(roll);
-		
+
 		controller.add(label);
 		controller.add(turn);
 		controller.add(dicePane);
@@ -184,20 +195,21 @@ public class GamePane extends JPanel {
 				if (next != toNumber)
 					move(player, toNumber, next);
 				else {
-					if (game.currentPlayerSquare() instanceof SpecialSquare
-							&& !(game.currentPlayerSquare() instanceof FreezeSquare)) {
+					if (game.currentPlayerSquare() instanceof SpecialSquare) {
 						SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
 						move(player, ss.getDestination(), -1);
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
-					} else {
-						roll.setEnabled(true);
+					} 
+					else if (game.currentPlayerSquare() instanceof BackWardSquare){
+						//TODO
+					}else {
 						game.switchPlayer();
 						if (game.currentPlayerSquare() instanceof FreezeSquare) {
-							
 							game.switchPlayer();
 						}
+						roll.setEnabled(true);
 						turn.setForeground(game.currentPlayer().getColor());
-						turn.setText(game.currentPlayerName() + "'s turn" );
+						turn.setText(game.currentPlayerName() + "'s turn");
 					}
 				}
 			}
