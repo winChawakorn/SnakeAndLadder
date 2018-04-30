@@ -27,6 +27,14 @@ public class ConsoleUI {
 			int position = game.currentPlayerPosition();
 			System.out.println("Position: " + position);
 			// TODO if player is on the FREEZE QUARE, print something and continue;
+			if(game.currentPlayerSquare() instanceof FreezeSquare){
+				FreezeSquare freeze = (FreezeSquare) game.currentPlayerSquare();
+				if(freeze.skipedCount-- == 1){
+					game.switchPlayer();
+					continue;
+				}else
+					freeze.skipedCount = 1;
+			}
 			System.out.println("Please hit enter to roll a die.");
 			String enter = scanner.nextLine();
 			int face = game.currentPlayerRollDice();
@@ -61,10 +69,7 @@ public class ConsoleUI {
 			} else {
 				Square square = game.currentPlayerSquare();
 				if (square instanceof SpecialSquare) {
-					if (square instanceof Ladder)
-						System.out.println("Great! you found a Ladder!");
-					if (square instanceof Snake)
-						System.out.println("Oh no! you found a Snake!");
+					System.out.println(square.toString());
 					SpecialSquare ss = (SpecialSquare) square;
 					game.currentPlayeMovePiece(ss.getDestination() - game.currentPlayerPosition());
 				}

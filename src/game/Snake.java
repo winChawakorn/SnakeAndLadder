@@ -8,6 +8,6 @@ public class Snake extends SpecialSquare {
 
 	@Override
 	public String toString() {
-		return "Snake";
+		return "Oh no! you found a Snake!";
 	}
 }

@@ -8,6 +8,6 @@ public class Ladder extends SpecialSquare {
 
 	@Override
 	public String toString() {
-		return "Ladder";
+		return "Great! you found a Ladder!";
 	}
 }
