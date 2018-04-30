@@ -17,6 +17,8 @@ import javax.swing.Timer;
 
 import game.Game;
 import game.Player;
+import game.Snake;
+import game.SpecialSquare;
 
 public class GamePane extends JPanel {
 	private Game game;
@@ -92,7 +94,11 @@ public class GamePane extends JPanel {
 			game.currentPlayeMovePiece(face);
 			dice.setText(face + "");
 			move(game.currentPlayer(), game.currentPlayerPosition());
-			game.switchPlayer();
+			if (game.currentPlayerWins()) {
+				roll.setVisible(false);
+				roll.setEnabled(false);
+				turn.setText(game.currentPlayerName() + " WINS!");
+			}
 		});
 
 		controller.add(label);
@@ -112,23 +118,35 @@ public class GamePane extends JPanel {
 				numDestination = 10;
 			if (((number - 1) / 10) % 2 != 0)
 				numDestination = 10 - ((number - 1) % 10);
-			int destination = 240 + (numDestination * 70);
-			boolean xIsDone = piece.getX() >= destination;
-			if (piece.getX() > destination) {
+			int destinationX = 240 + (numDestination * 70);
+			boolean xIsDone = piece.getX() >= destinationX;
+			if (piece.getX() > destinationX) {
 				dx = -5;
-				xIsDone = piece.getX() <= destination;
+				xIsDone = piece.getX() <= destinationX;
 			}
 			if (!xIsDone) {
 				piece.setLocation(piece.getX() + dx, piece.getY());
 			}
 			int rowNum = 10 - ((number - 1) / 10);
-			boolean yIsDone = piece.getY() <= (rowNum * 70) - 55;
-
+			int destinationY = (rowNum * 70) - 55;
+			boolean yIsDone = piece.getY() <= destinationY;
+			int dy = -5;
+			if (piece.getY() < destinationY) {
+				yIsDone = piece.getY() >= destinationY;
+				dy = 5;
+			}
 			if (!yIsDone)
-				piece.setLocation(piece.getX(), piece.getY() - 5);
+				piece.setLocation(piece.getX(), piece.getY() + dy);
 			if (xIsDone && yIsDone) {
-				timer.stop();
+				if (game.currentPlayerSquare() instanceof SpecialSquare) {
+					SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
+					move(player, ss.getDestination());
+					game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
+					game.switchPlayer();
+				}
+				game.switchPlayer();
 				roll.setEnabled(true);
+				timer.stop();
 			}
 		});
 		timer.start();

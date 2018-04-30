@@ -2,8 +2,8 @@ package game;
 
 public class Ladder extends SpecialSquare {
 
-	public Ladder(int number, int steps) {
-		super(number, steps);
+	public Ladder(int number, int destination) {
+		super(number, destination);
 	}
 
 	@Override

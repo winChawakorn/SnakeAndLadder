@@ -1,4 +1,5 @@
 package game;
+
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -65,7 +66,7 @@ public class ConsoleUI {
 					if (square instanceof Snake)
 						System.out.println("Oh no! you found a Snake!");
 					SpecialSquare ss = (SpecialSquare) square;
-					game.currentPlayeMovePiece(ss.getSteps());
+					game.currentPlayeMovePiece(ss.getDestination() - game.currentPlayerPosition());
 				}
 				System.out.println("New position: " + game.currentPlayerPosition());
 				game.switchPlayer();

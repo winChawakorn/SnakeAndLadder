@@ -2,15 +2,15 @@ package game;
 
 public abstract class SpecialSquare extends Square {
 
-	private int steps;
+	private int destination;
 
-	public SpecialSquare(int number, int steps) {
+	public SpecialSquare(int number, int destination) {
 		super(number);
-		this.steps = steps;
+		this.destination = destination;
 	}
 
-	public int getSteps() {
-		return steps;
+	public int getDestination() {
+		return destination;
 	}
 
 	public abstract String toString();
