@@ -1,5 +1,9 @@
 package game;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game {
 
 	private Player[] players;
@@ -7,14 +11,21 @@ public class Game {
 	private Board board;
 	private int currentPlayerIndex;
 	private boolean ended;
+	private List<Color> colorlist;
 
 	public Game(int numPlayer) {
 		players = new Player[numPlayer];
 		board = new Board();
 		die = new Die();
 		ended = false;
+		colorlist = new ArrayList<Color>();
+		colorlist.add(Color.RED);
+		colorlist.add(Color.BLUE);
+		colorlist.add(Color.GREEN);
+		colorlist.add(Color.YELLOW);
+		
 		for (int i = 0; i < numPlayer; i++) {
-			players[i] = new Player("P" + (i + 1));
+			players[i] = new Player("P" + (i + 1),colorlist.get(i));
 			board.addPiece(players[i].getPiece(), 0);
 		}
 	}
