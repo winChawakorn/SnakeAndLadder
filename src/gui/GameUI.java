@@ -21,6 +21,7 @@ public class GameUI {
 	private void init() {
 		frame.setResizable(false);
 		frame.setSize(1025, 753);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setPanel(new MenuPane());
 	}
 

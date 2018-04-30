@@ -12,6 +12,11 @@ import javax.swing.SwingConstants;
 
 import game.Game;
 
+/**
+ * This menu pane provide users to choose number of player
+ * @author vittunyutamaeprasart
+ *
+ */
 public class MenuPane extends JPanel {
 
 	public MenuPane() {
