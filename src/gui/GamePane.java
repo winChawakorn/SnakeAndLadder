@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import game.FreezeSquare;
 import game.Game;
 import game.Player;
 import game.SpecialSquare;
@@ -60,7 +61,7 @@ public class GamePane extends JPanel {
 			add(yellow);
 		}
 		JLabel board = new JLabel(new ImageIcon(this.getClass().getResource("/img/board.png")));
-		board.setBounds(300, 0, 700, 720);
+		board.setBounds(300, 0, 720, 720);
 		add(board);
 
 		JPanel controller = new JPanel();
@@ -99,7 +100,6 @@ public class GamePane extends JPanel {
 			roll.setEnabled(false);
 			int oldNumber = game.currentPlayerPosition();
 			int face = game.currentPlayerRollDice();
-			face = 2;
 			dice.setText(face + "");
 			game.currentPlayeMovePiece(face);
 			move(game.currentPlayer(), game.currentPlayerPosition(), oldNumber);
@@ -138,7 +138,7 @@ public class GamePane extends JPanel {
 				numDestination = 10;
 			if (((next - 1) / 10) % 2 != 0)
 				numDestination = 10 - ((next - 1) % 10);
-			int destinationX = 240 + (numDestination * 70);
+			int destinationX = 250 + (numDestination * 70);
 			boolean xIsDone = piece.getX() >= destinationX;
 			if (piece.getX() > destinationX) {
 				dx = -5;
@@ -166,7 +166,8 @@ public class GamePane extends JPanel {
 				if (next != toNumber)
 					move(player, toNumber, next);
 				else {
-					if (game.currentPlayerSquare() instanceof SpecialSquare) {
+					if (game.currentPlayerSquare() instanceof SpecialSquare
+							&& !(game.currentPlayerSquare() instanceof FreezeSquare)) {
 						SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
 						move(player, ss.getDestination(), -1);
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
