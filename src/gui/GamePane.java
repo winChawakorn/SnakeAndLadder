@@ -131,6 +131,7 @@ public class GamePane extends JPanel {
 		controller.add(turn);
 		controller.add(dicePane);
 		controller.add(roll);
+		controller.add(currentStatus);
 		add(controller);
 	}
 
