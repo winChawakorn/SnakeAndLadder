@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-import game.BackWardSquare;
+import game.BackwardSquare;
 import game.FreezeSquare;
 import game.Game;
 import game.SpecialSquare;
@@ -96,13 +96,14 @@ public class GamePane extends JPanel {
 
 		font = new Font("Comic Sans MS", Font.PLAIN, 20);
 		currentStatus = new JTextArea("Click roll button to play");
-		currentStatus.setPreferredSize(new Dimension(260, 170));
+		currentStatus.setPreferredSize(new Dimension(230, 170));
 		currentStatus.setForeground(game.currentPlayer().getColor());
 		currentStatus.setFont(font);
 		currentStatus.setBackground(Color.PINK);
 		currentStatus.setLineWrap(true);
 		currentStatus.setWrapStyleWord(true);
 		currentStatus.setEditable(false);
+		currentStatus.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
 
 		JPanel dicePane = new JPanel();
 		dicePane.setPreferredSize(new Dimension(300, 120));
@@ -141,9 +142,8 @@ public class GamePane extends JPanel {
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
-			face = 100;
 			dice.setText(face + "");
-			if (game.currentPlayerSquare() instanceof BackWardSquare) {
+			if (game.currentPlayerSquare() instanceof BackwardSquare) {
 				face = (-1) * face;
 				move(game.currentPlayerIndex(), game.currentPlayerPosition() + face, -1);
 
@@ -180,6 +180,10 @@ public class GamePane extends JPanel {
 	 *            of squares to move
 	 */
 	protected void move(int playerIndex, int toNumber, int fromNumber) {
+		if (game.currentPlayerWins() && toNumber - fromNumber == 1) {
+			game.end();
+			return;
+		}
 		Timer timer = new Timer(10, null);
 		timer.addActionListener((e) -> {
 			int next = fromNumber + 1;
@@ -225,32 +229,39 @@ public class GamePane extends JPanel {
 						SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
 						move(playerIndex, ss.getDestination(), -1);
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
-					} else if (game.currentPlayerSquare() instanceof BackWardSquare) {
-						BackWardSquare bs = (BackWardSquare) game.currentPlayerSquare();
+					} else if (game.currentPlayerSquare() instanceof BackwardSquare) {
+						BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 						currentStatus.setText(bs.toString());
 						roll.setEnabled(true);
 						// wait for roll again
 					} else {
-						game.switchPlayer();
-						if (game.currentPlayerSquare() instanceof FreezeSquare) {
-							FreezeSquare fs = (FreezeSquare) game.currentPlayerSquare();
-							// check this player have already skipped or not.
-							if (fs.getSkipedCount() == 1) {
-								currentStatus.setText("Other player is skipped. Your turn again");
-								game.switchPlayer();
-								fs.setSkipedCount(0);
-							} else {
-								fs.setSkipedCount(1);
-							}
-						}
-
-						roll.setEnabled(true);
-						turn.setForeground(game.currentPlayer().getColor());
-						turn.setText(game.currentPlayerName() + "'s turn");
+						switchPlayer();
 					}
 				}
 			}
 		});
 		timer.start();
+	}
+
+	protected void switchPlayer() {
+		game.switchPlayer();
+		freeze();
+		roll.setEnabled(true);
+		turn.setForeground(game.currentPlayer().getColor());
+		turn.setText(game.currentPlayerName() + "'s turn");
+	}
+
+	protected void freeze() {
+		if (game.currentPlayerSquare() instanceof FreezeSquare) {
+			FreezeSquare fs = (FreezeSquare) game.currentPlayerSquare();
+			// check this player have already skipped or not.
+			if (fs.getSkipedCount() == 1) {
+				currentStatus.setText("Other player is skipped.");
+				game.switchPlayer();
+				fs.setSkipedCount(0);
+			} else {
+				fs.setSkipedCount(1);
+			}
+		}
 	}
 }

@@ -13,26 +13,16 @@ import game.Game;
 public class GameServer extends AbstractServer {
 
 	List<ConnectionToClient> connections;
-	boolean isStart = false;
 
 	public GameServer(int port) {
 		super(port);
 		connections = new ArrayList<>();
 	}
 
-	public void start() {
-		isStart = true;
-		sendToAllClients(new Game(connections.size()));
-	}
-
-	public void end() {
-		isStart = false;
-	}
-
 	@Override
-	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		if (msg instanceof Game) {
-			sendToAllClients((Game) msg);
+	protected void handleMessageFromClient(Object o, ConnectionToClient client) {
+		if (o instanceof Game) {
+			sendToAllClients((Game) o);
 		}
 	}
 
@@ -41,19 +31,17 @@ public class GameServer extends AbstractServer {
 		super.clientConnected(client);
 		System.out.println(client.getInetAddress() + " connected");
 		connections.add(client);
-		if (isStart) {
-			try {
-				client.sendToClient("The game is started");
-			} catch (IOException e) {
-			}
-			clientDisconnected(client);
+		try {
+			client.sendToClient(getNumberOfClients());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	protected synchronized void clientDisconnected(ConnectionToClient client) {
 		super.clientDisconnected(client);
-		System.out.println(client.getInetAddress() + " disconnected");
+		System.out.println("Someone disconnected");
 		connections.remove(client);
 	}
 
@@ -65,12 +53,15 @@ public class GameServer extends AbstractServer {
 			s.listen();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
 		System.out.println("Server started!");
 		while (cmd != "e") {
+			System.out.println("Press enter to see the server data");
 			cmd = sc.nextLine();
-			System.out.println(s.isListening());
-			System.out.println(s.getNumberOfClients() + "players online");
+			System.out.println(s.isListening() ? "Server is online" : "Server is offline");
+			System.out.println(s.getNumberOfClients() + " players online");
+			System.out.println("------------------------------------");
 		}
 	}
 
