@@ -12,8 +12,7 @@ public class BackWardSquare extends Square implements Serializable {
 
 	@Override
 	public String toString() {
-		return "You reach backward square number " + super.getNumber() + ". Move back to number "
-				+ (super.getNumber() - this.distance);
+		return "You reach backward square number " + super.getNumber() + ". Roll dice again. To find how many squares you have to go back. ";
 	}
 
 	public void setDistance(int distance) {

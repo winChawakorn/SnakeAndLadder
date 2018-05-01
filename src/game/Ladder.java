@@ -10,6 +10,6 @@ public class Ladder extends SpecialSquare implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Great! you found a Ladder!";
+		return "Great! you found a Ladder!. Move to number " + super.getDestination();
 	}
 }
