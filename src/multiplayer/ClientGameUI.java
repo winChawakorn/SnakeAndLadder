@@ -9,12 +9,16 @@ import gui.GamePane;
 
 public class ClientGameUI extends GamePane {
 
-	MyClient client;
+	Client client;
 
 	public ClientGameUI() throws IOException {
 		super(new Game(2));
-		if (roll.getActionListeners().length > 0)
-			roll.removeActionListener(roll.getActionListeners()[0]);
+		client = new Client("localhost", 3006);
+		client.openConnection();
+	}
+
+	@Override
+	protected void addRollListener() {
 		roll.addActionListener((e) -> {
 			Game game = getGame();
 			roll.setEnabled(false);
@@ -27,13 +31,11 @@ public class ClientGameUI extends GamePane {
 				e1.printStackTrace();
 			}
 		});
-		client = new MyClient("localhost", 3006);
-		client.openConnection();
 	}
 
-	public class MyClient extends AbstractClient {
+	public class Client extends AbstractClient {
 
-		public MyClient(String host, int port) {
+		public Client(String host, int port) {
 			super(host, port);
 		}
 
