@@ -125,6 +125,7 @@ public class GamePane extends JPanel {
 		roll = new JButton("Roll");
 		roll.setFont(font);
 		roll.setBackground(Color.LIGHT_GRAY);
+		addRollListener();
 
 		controller.add(label);
 		controller.add(turn);
@@ -168,24 +169,6 @@ public class GamePane extends JPanel {
 			}
 		});
 	}
-
-	// protected void update() {
-	// dice.setText(face + "");
-	// move(game.currentPlayer(), game.currentPlayerPosition(), fromNumber);
-	// if (game.currentPlayerWins()) {
-	// roll.setEnabled(false);
-	// controller.remove(roll);
-	// controller.add(playAgain);
-	// turn.setText(game.currentPlayerName() + " WINS!");
-	// }
-	// }
-	//
-	// protected void roll() {
-	// roll.setEnabled(false);
-	// fromNumber = game.currentPlayerPosition();
-	// face = game.currentPlayerRollDice();
-	// game.currentPlayeMovePiece(face);
-	// }
 
 	/**
 	 * move piece of input player

@@ -13,10 +13,20 @@ import game.Game;
 public class GameServer extends AbstractServer {
 
 	List<ConnectionToClient> connections;
+	boolean isStart = false;
 
 	public GameServer(int port) {
 		super(port);
 		connections = new ArrayList<>();
+	}
+
+	public void start() {
+		isStart = true;
+		sendToAllClients(new Game(connections.size()));
+	}
+
+	public void end() {
+		isStart = false;
 	}
 
 	@Override
@@ -31,6 +41,13 @@ public class GameServer extends AbstractServer {
 		super.clientConnected(client);
 		System.out.println(client.getInetAddress() + " connected");
 		connections.add(client);
+		if (isStart) {
+			try {
+				client.sendToClient("The game is started");
+			} catch (IOException e) {
+			}
+			clientDisconnected(client);
+		}
 	}
 
 	@Override
@@ -49,10 +66,11 @@ public class GameServer extends AbstractServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("ocsf server started!");
+		System.out.println("Server started!");
 		while (cmd != "e") {
 			cmd = sc.nextLine();
 			System.out.println(s.isListening());
+			System.out.println(s.getNumberOfClients() + "players online");
 		}
 	}
 
