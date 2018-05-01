@@ -1,6 +1,8 @@
 package game;
 
-public class Ladder extends SpecialSquare {
+import java.io.Serializable;
+
+public class Ladder extends SpecialSquare implements Serializable {
 
 	public Ladder(int number, int destination) {
 		super(number, destination);

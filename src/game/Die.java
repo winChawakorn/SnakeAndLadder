@@ -1,7 +1,9 @@
 package game;
+
+import java.io.Serializable;
 import java.util.Random;
 
-public class Die {
+public class Die implements Serializable {
 	private final int MAX_FACE = 6;
 	private int face;
 

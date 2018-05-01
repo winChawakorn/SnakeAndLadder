@@ -1,6 +1,8 @@
 package game;
 
-public class Snake extends SpecialSquare {
+import java.io.Serializable;
+
+public class Snake extends SpecialSquare implements Serializable {
 
 	public Snake(int number, int destination) {
 		super(number, destination);

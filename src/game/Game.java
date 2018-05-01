@@ -1,14 +1,19 @@
 package game;
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable {
 
 	private Player[] players;
 	private Die die;
 	private Board board;
 	private int currentPlayerIndex;
+	private int previousPlayerPosition;
 	private boolean ended;
+	private int numPlayer;
 
 	public Game(int numPlayer) {
+		this.numPlayer = numPlayer;
 		players = new Player[numPlayer];
 		board = new Board();
 		die = new Die();
@@ -20,7 +25,11 @@ public class Game {
 	}
 
 	public int getNumPlayer() {
-		return players.length;
+		return numPlayer;
+	}
+
+	public void setNumPlayer(int numPlayer) {
+		this.numPlayer = numPlayer;
 	}
 
 	public boolean isEnd() {
@@ -35,8 +44,16 @@ public class Game {
 		return players[currentPlayerIndex];
 	}
 
+	public int previousPlayerPosition() {
+		return previousPlayerPosition;
+	}
+
 	public void switchPlayer() {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+	}
+
+	public int currentPlayerIndex() {
+		return currentPlayerIndex;
 	}
 
 	public String currentPlayerName() {
@@ -52,6 +69,7 @@ public class Game {
 	}
 
 	public void currentPlayeMovePiece(int steps) {
+		previousPlayerPosition = currentPlayerPosition();
 		currentPlayer().movePiece(board, steps);
 	}
 

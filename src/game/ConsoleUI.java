@@ -1,8 +1,9 @@
 package game;
 
+import java.io.Serializable;
 import java.util.Scanner;
 
-public class ConsoleUI {
+public class ConsoleUI implements Serializable {
 
 	private Scanner scanner = new Scanner(System.in);
 
@@ -27,12 +28,12 @@ public class ConsoleUI {
 			int position = game.currentPlayerPosition();
 			System.out.println("Position: " + position);
 			// TODO if player is on the FREEZE QUARE, print something and continue;
-			if(game.currentPlayerSquare() instanceof FreezeSquare){
+			if (game.currentPlayerSquare() instanceof FreezeSquare) {
 				FreezeSquare freeze = (FreezeSquare) game.currentPlayerSquare();
-				if(freeze.skipedCount-- == 1){
+				if (freeze.skipedCount-- == 1) {
 					game.switchPlayer();
 					continue;
-				}else
+				} else
 					freeze.skipedCount = 1;
 			}
 			System.out.println("Please hit enter to roll a die.");

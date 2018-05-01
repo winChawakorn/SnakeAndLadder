@@ -1,6 +1,8 @@
 package game;
 
-public class BackWardSquare extends SpecialSquare {
+import java.io.Serializable;
+
+public class BackWardSquare extends SpecialSquare implements Serializable {
 
 	public BackWardSquare(int number, int destination) {
 		super(number, destination);

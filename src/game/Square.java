@@ -1,7 +1,9 @@
 package game;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Square {
+public class Square implements Serializable {
 	private java.util.List<Piece> pieces;
 	private int number;
 	private boolean goal;

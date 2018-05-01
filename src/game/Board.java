@@ -1,6 +1,8 @@
 package game;
 
-public class Board {
+import java.io.Serializable;
+
+public class Board implements Serializable {
 	public static final int SIZE = 101;
 
 	private Square[] squares;
