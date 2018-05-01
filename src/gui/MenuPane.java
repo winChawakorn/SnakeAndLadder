@@ -69,6 +69,7 @@ public class MenuPane extends JPanel {
 			try {
 				GameUI.setPanel(new ClientGameUI());
 			} catch (IOException e1) {
+				// TODO Show in UI that the server is not available
 				e1.printStackTrace();
 			}
 		});

@@ -9,10 +9,12 @@ import gui.GamePane;
 
 public class ClientGameUI extends GamePane {
 
-	Client client;
+	private Client client;
+	private int playerIndex;
 
 	public ClientGameUI() throws IOException {
 		super(new Game(2));
+		roll.setEnabled(false);
 		client = new Client("localhost", 3006);
 		client.openConnection();
 	}
@@ -33,6 +35,20 @@ public class ClientGameUI extends GamePane {
 		});
 	}
 
+	// @Override
+	// protected void move(int playerIndex, int toNumber, int fromNumber) {
+	// super.move(playerIndex, toNumber, fromNumber);
+
+	@Override
+	protected void switchPlayer() {
+		getGame().switchPlayer();
+		freeze();
+		if (getGame().currentPlayerIndex() == playerIndex)
+			roll.setEnabled(true);
+		turn.setForeground(getGame().currentPlayer().getColor());
+		turn.setText(getGame().currentPlayerName() + "'s turn");
+	}
+
 	public class Client extends AbstractClient {
 
 		public Client(String host, int port) {
@@ -40,10 +56,15 @@ public class ClientGameUI extends GamePane {
 		}
 
 		@Override
-		protected void handleMessageFromServer(Object msg) {
-			if (msg instanceof Game) {
+		protected void handleMessageFromServer(Object o) {
+			if (o instanceof Integer) {
+				playerIndex = (int) o - 1;
+				if (getGame().currentPlayerIndex() == playerIndex)
+					roll.setEnabled(true);
+			}
+			if (o instanceof Game) {
 				roll.setEnabled(false);
-				setGame((Game) msg);
+				setGame((Game) o);
 				Game game = getGame();
 				dice.setText(game.currentPlayerPosition() - game.previousPlayerPosition() + "");
 				move(game.currentPlayerIndex(), game.currentPlayerPosition(), game.previousPlayerPosition());
