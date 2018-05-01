@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.HashMap;
@@ -30,6 +29,7 @@ public class GamePane extends JPanel {
 	private JButton roll;
 	private JLabel turn;
 	private JTextArea currentStatus;
+	private JTextField dice;
 
 	public GamePane(Game game) {
 		super();
@@ -85,7 +85,7 @@ public class GamePane extends JPanel {
 
 		font = new Font("Comic Sans MS", Font.PLAIN, 20);
 		currentStatus = new JTextArea("Click roll button to play");
-		currentStatus.setPreferredSize(new Dimension(260, 200));
+		currentStatus.setPreferredSize(new Dimension(260, 170));
 		currentStatus.setForeground(game.currentPlayer().getColor());
 		currentStatus.setFont(font);
 		currentStatus.setBackground(Color.PINK);
@@ -96,7 +96,7 @@ public class GamePane extends JPanel {
 		JPanel dicePane = new JPanel();
 		dicePane.setPreferredSize(new Dimension(300, 120));
 		dicePane.setBackground(new Color(0, 0, 0, 0));
-		JTextField dice = new JTextField("0", SwingConstants.CENTER);
+		dice = new JTextField("0", SwingConstants.CENTER);
 		dice.setEditable(false);
 		dice.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 50));
 		dicePane.add(dice);
@@ -115,20 +115,29 @@ public class GamePane extends JPanel {
 		roll.setFont(font);
 		roll.setBackground(Color.LIGHT_GRAY);
 		roll.addActionListener((e) -> {
+			currentStatus.setForeground(game.currentPlayer().getColor());
 			roll.setEnabled(false);
 			int oldNumber = game.currentPlayerPosition();
 			int face = game.currentPlayerRollDice();
+			face = 100;
 			dice.setText(face + "");
+			if (game.currentPlayerSquare() instanceof BackWardSquare) {
+				face = (-1) * face;
+				move(game.currentPlayer(), game.currentPlayerPosition() + face, -1);
+
+			} else {
+				move(game.currentPlayer(), game.currentPlayerPosition() + face, game.currentPlayerPosition());
+
+			}
 			game.currentPlayeMovePiece(face);
 			Square cs = game.currentPlayerSquare();
-			move(game.currentPlayer(), game.currentPlayerPosition(), oldNumber);
 			// set current status
 			if (cs instanceof FreezeSquare || cs instanceof SpecialSquare) {
 				currentStatus.setText(cs.toString());
 			} else {
 				currentStatus.setText("You go from number " + oldNumber + " to number " + game.currentPlayerPosition());
 			}
-			//
+			// win or not
 			if (game.currentPlayerWins()) {
 				roll.setEnabled(false);
 				controller.remove(roll);
@@ -186,27 +195,39 @@ public class GamePane extends JPanel {
 			}
 			if (!yIsDone)
 				piece.setLocation(piece.getX(), piece.getY() + dy);
+			// when piece already one square
 			if (xIsDone && yIsDone) {
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e1) {
 				}
 				timer.stop();
-				if (next != toNumber)
+				if (next != toNumber) // don't reach destination yet
 					move(player, toNumber, next);
-				else {
+				else {// reach destination
 					if (game.currentPlayerSquare() instanceof SpecialSquare) {
 						SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
 						move(player, ss.getDestination(), -1);
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
-					} 
-					else if (game.currentPlayerSquare() instanceof BackWardSquare){
-						//TODO
-					}else {
+					} else if (game.currentPlayerSquare() instanceof BackWardSquare) {
+						BackWardSquare bs = (BackWardSquare) game.currentPlayerSquare();
+						currentStatus.setText(bs.toString());
+						roll.setEnabled(true);
+						// wait for roll again
+					} else {
 						game.switchPlayer();
 						if (game.currentPlayerSquare() instanceof FreezeSquare) {
-							game.switchPlayer();
+							FreezeSquare fs = (FreezeSquare) game.currentPlayerSquare();
+							// check this player have already skipped or not.
+							if (fs.getSkipedCount() == 1) {
+								currentStatus.setText("Other player is skipped. Your turn again");
+								game.switchPlayer();
+								fs.setSkipedCount(0);
+							} else {
+								fs.setSkipedCount(1);
+							}
 						}
+
 						roll.setEnabled(true);
 						turn.setForeground(game.currentPlayer().getColor());
 						turn.setText(game.currentPlayerName() + "'s turn");
