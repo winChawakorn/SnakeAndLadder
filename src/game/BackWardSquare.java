@@ -1,6 +1,8 @@
 package game;
 
-public class BackWardSquare extends Square {
+import java.io.Serializable;
+
+public class BackWardSquare extends Square implements Serializable {
 
 	private int distance;
 

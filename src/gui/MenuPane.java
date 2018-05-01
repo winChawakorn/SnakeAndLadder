@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -11,11 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import game.Game;
+import multiplayer.ClientGameUI;
 
 /**
- * This menu pane provide users to choose number of player
- * @author vittunyutamaeprasart
- *
+ * This menu pane provide users to choose number of player *
  */
 public class MenuPane extends JPanel {
 
@@ -40,7 +40,7 @@ public class MenuPane extends JPanel {
 		two.setBackground(Color.DARK_GRAY);
 		two.setForeground(Color.ORANGE);
 		two.setFont(btnFont);
-		two.setBounds(350, 100, 200, 100);
+		two.setBounds(350, 50, 200, 100);
 		two.addActionListener((e) -> {
 			GameUI.setPanel(new GamePane(new Game(2)));
 		});
@@ -48,7 +48,7 @@ public class MenuPane extends JPanel {
 		three.setBackground(Color.DARK_GRAY);
 		three.setForeground(Color.ORANGE);
 		three.setFont(btnFont);
-		three.setBounds(350, 250, 200, 100);
+		three.setBounds(350, 175, 200, 100);
 		three.addActionListener((e) -> {
 			GameUI.setPanel(new GamePane(new Game(3)));
 		});
@@ -56,14 +56,27 @@ public class MenuPane extends JPanel {
 		four.setBackground(Color.DARK_GRAY);
 		four.setForeground(Color.ORANGE);
 		four.setFont(btnFont);
-		four.setBounds(350, 400, 200, 100);
+		four.setBounds(350, 300, 200, 100);
 		four.addActionListener((e) -> {
 			GameUI.setPanel(new GamePane(new Game(4)));
+		});
+		JButton online = new JButton("Online");
+		online.setBackground(Color.DARK_GRAY);
+		online.setForeground(Color.ORANGE);
+		online.setFont(btnFont);
+		online.setBounds(350, 425, 200, 100);
+		online.addActionListener((e) -> {
+			try {
+				GameUI.setPanel(new ClientGameUI());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		});
 		add(label, BorderLayout.NORTH);
 		add(center, BorderLayout.CENTER);
 		center.add(two);
 		center.add(three);
 		center.add(four);
+		center.add(online);
 	}
 }

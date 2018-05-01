@@ -1,9 +1,11 @@
 package game;
 
-public class FreezeSquare extends Square{
+import java.io.Serializable;
+
+public class FreezeSquare extends Square implements Serializable {
 
 	public int skipedCount;
-	
+
 	public FreezeSquare(int number) {
 		super(number);
 		skipedCount = 1;

@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.HashMap;
@@ -20,16 +19,20 @@ import javax.swing.Timer;
 import game.BackWardSquare;
 import game.FreezeSquare;
 import game.Game;
-import game.Player;
 import game.SpecialSquare;
 import game.Square;
 
 public class GamePane extends JPanel {
 	private Game game;
-	private Map<Player, JLabel> players;
-	private JButton roll;
-	private JLabel turn;
 	private JTextArea currentStatus;
+	protected Map<Integer, JLabel> players;
+	protected JButton roll;
+	protected JLabel turn;
+	protected JTextField dice;
+	protected JPanel controller;
+	protected JButton playAgain;
+	protected int face;
+	protected int fromNumber;
 
 	public GamePane(Game game) {
 		super();
@@ -38,30 +41,38 @@ public class GamePane extends JPanel {
 		init();
 	}
 
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	public Game getGame() {
+		return this.game;
+	}
+
 	private void init() {
 		setLayout(null);
 
 		JLabel red = new JLabel(new ImageIcon(this.getClass().getResource("/img/red.png")));
 		red.setBounds(50, 645, 47, 61);
-		players.put(game.currentPlayer(), red);
+		players.put(game.currentPlayerIndex(), red);
 		game.switchPlayer();
 		add(red);
 		JLabel blue = new JLabel(new ImageIcon(this.getClass().getResource("/img/blue.png")));
 		blue.setBounds(100, 645, 47, 61);
-		players.put(game.currentPlayer(), blue);
+		players.put(game.currentPlayerIndex(), blue);
 		game.switchPlayer();
 		add(blue);
 		if (game.getNumPlayer() >= 3) {
 			JLabel green = new JLabel(new ImageIcon(this.getClass().getResource("/img/green.png")));
 			green.setBounds(150, 645, 47, 61);
-			players.put(game.currentPlayer(), green);
+			players.put(game.currentPlayerIndex(), green);
 			game.switchPlayer();
 			add(green);
 		}
 		if (game.getNumPlayer() == 4) {
 			JLabel yellow = new JLabel(new ImageIcon(this.getClass().getResource("/img/yellow.png")));
 			yellow.setBounds(200, 645, 47, 61);
-			players.put(game.currentPlayer(), yellow);
+			players.put(game.currentPlayerIndex(), yellow);
 			game.switchPlayer();
 			add(yellow);
 		}
@@ -69,7 +80,7 @@ public class GamePane extends JPanel {
 		board.setBounds(300, 0, 720, 720);
 		add(board);
 
-		JPanel controller = new JPanel();
+		controller = new JPanel();
 		controller.setBounds(0, 0, 300, 720);
 		controller.setBackground(Color.PINK);
 		controller.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
@@ -96,12 +107,12 @@ public class GamePane extends JPanel {
 		JPanel dicePane = new JPanel();
 		dicePane.setPreferredSize(new Dimension(300, 120));
 		dicePane.setBackground(new Color(0, 0, 0, 0));
-		JTextField dice = new JTextField("0", SwingConstants.CENTER);
+		dice = new JTextField("0", SwingConstants.CENTER);
 		dice.setEditable(false);
 		dice.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 50));
 		dicePane.add(dice);
 
-		JButton playAgain = new JButton("Play again");
+		playAgain = new JButton("Play again");
 		playAgain.setFont(font);
 		playAgain.setBackground(Color.WHITE);
 		playAgain.addActionListener((e) -> {
@@ -114,21 +125,30 @@ public class GamePane extends JPanel {
 		roll = new JButton("Roll");
 		roll.setFont(font);
 		roll.setBackground(Color.LIGHT_GRAY);
+
+		controller.add(label);
+		controller.add(turn);
+		controller.add(dicePane);
+		controller.add(roll);
+		add(controller);
+	}
+
+	protected void addRollListener() {
 		roll.addActionListener((e) -> {
 			roll.setEnabled(false);
-			int oldNumber = game.currentPlayerPosition();
-			int face = game.currentPlayerRollDice();
-			dice.setText(face + "");
+			fromNumber = game.currentPlayerPosition();
+			face = game.currentPlayerRollDice();
 			game.currentPlayeMovePiece(face);
 			Square cs = game.currentPlayerSquare();
-			move(game.currentPlayer(), game.currentPlayerPosition(), oldNumber);
 			// set current status
 			if (cs instanceof FreezeSquare || cs instanceof SpecialSquare) {
 				currentStatus.setText(cs.toString());
 			} else {
-				currentStatus.setText("You go from number " + oldNumber + " to number " + game.currentPlayerPosition());
+				currentStatus
+						.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
 			}
-			//
+			dice.setText(face + "");
+			move(game.currentPlayerIndex(), game.currentPlayerPosition(), fromNumber);
 			if (game.currentPlayerWins()) {
 				roll.setEnabled(false);
 				controller.remove(roll);
@@ -136,31 +156,41 @@ public class GamePane extends JPanel {
 				turn.setText(game.currentPlayerName() + " WINS!");
 			}
 		});
-		rollPane.add(roll);
-
-		controller.add(label);
-		controller.add(turn);
-		controller.add(dicePane);
-		controller.add(rollPane);
-		controller.add(currentStatus);
-		add(controller);
 	}
+
+	// protected void update() {
+	// dice.setText(face + "");
+	// move(game.currentPlayer(), game.currentPlayerPosition(), fromNumber);
+	// if (game.currentPlayerWins()) {
+	// roll.setEnabled(false);
+	// controller.remove(roll);
+	// controller.add(playAgain);
+	// turn.setText(game.currentPlayerName() + " WINS!");
+	// }
+	// }
+	//
+	// protected void roll() {
+	// roll.setEnabled(false);
+	// fromNumber = game.currentPlayerPosition();
+	// face = game.currentPlayerRollDice();
+	// game.currentPlayeMovePiece(face);
+	// }
 
 	/**
 	 * move piece of input player
 	 * 
-	 * @param player
+	 * @param playerIndex
 	 *            who his piece be moved
 	 * @param number
 	 *            of squares to move
 	 */
-	private void move(Player player, int toNumber, int fromNumber) {
+	protected void move(int playerIndex, int toNumber, int fromNumber) {
 		Timer timer = new Timer(10, null);
 		timer.addActionListener((e) -> {
 			int next = fromNumber + 1;
 			if (fromNumber == -1)
 				next = toNumber;
-			JLabel piece = players.get(player);
+			JLabel piece = players.get(playerIndex);
 			int dx = 5;
 			int numDestination = next % 10;
 			if (next % 10 == 0)
@@ -193,16 +223,15 @@ public class GamePane extends JPanel {
 				}
 				timer.stop();
 				if (next != toNumber)
-					move(player, toNumber, next);
+					move(playerIndex, toNumber, next);
 				else {
 					if (game.currentPlayerSquare() instanceof SpecialSquare) {
 						SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
-						move(player, ss.getDestination(), -1);
+						move(playerIndex, ss.getDestination(), -1);
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
-					} 
-					else if (game.currentPlayerSquare() instanceof BackWardSquare){
-						//TODO
-					}else {
+					} else if (game.currentPlayerSquare() instanceof BackWardSquare) {
+						// TODO
+					} else {
 						game.switchPlayer();
 						if (game.currentPlayerSquare() instanceof FreezeSquare) {
 							game.switchPlayer();

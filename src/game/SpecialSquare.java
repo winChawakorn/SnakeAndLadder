@@ -1,6 +1,8 @@
 package game;
 
-public abstract class SpecialSquare extends Square {
+import java.io.Serializable;
+
+public abstract class SpecialSquare extends Square implements Serializable {
 
 	private int destination;
 
