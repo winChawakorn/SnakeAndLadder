@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Board implements Serializable {
 	public static final int SIZE = 101;
+	private final int GOAL_NUMBER = 100;
 
 	private Square[] squares;
 
@@ -25,7 +26,7 @@ public class Board implements Serializable {
 		squares[45] = new BackwardSquare(45);
 		squares[69] = new BackwardSquare(69);
 		squares[77] = new BackwardSquare(77);
-		squares[91] = new BackwardSquare(91);
+		squares[91] = new BackwardSquare(81);
 		squares[2] = new Ladder(2, 38);
 		squares[7] = new Ladder(7, 14);
 		squares[8] = new Ladder(8, 31);
@@ -48,7 +49,7 @@ public class Board implements Serializable {
 		squares[92] = new Snake(92, 88);
 		squares[95] = new Snake(95, 75);
 
-		squares[squares.length - 1].setGoal(true);
+		squares[GOAL_NUMBER].setGoal(true);
 	}
 
 	public void addPiece(Piece piece, int pos) {
@@ -77,8 +78,12 @@ public class Board implements Serializable {
 	public boolean pieceIsAtGoal(Piece piece) {
 		return squares[getPiecePosition(piece)].isGoal();
 	}
+	
 
 	public Square getSquare(Piece piece) {
 		return squares[getPiecePosition(piece)];
+	}
+	 public int getGoalNumber() {
+		return GOAL_NUMBER;
 	}
 }

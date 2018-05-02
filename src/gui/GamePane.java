@@ -17,6 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import game.BackwardSquare;
+import game.Board;
 import game.FreezeSquare;
 import game.Game;
 import game.SpecialSquare;
@@ -142,6 +143,7 @@ public class GamePane extends JPanel {
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
+			face = 102;
 			dice.setText(face + "");
 			if (game.currentPlayerSquare() instanceof BackwardSquare) {
 				face = (-1) * face;
@@ -151,20 +153,9 @@ public class GamePane extends JPanel {
 				move(game.currentPlayerIndex(), game.currentPlayerPosition() + face, game.currentPlayerPosition());
 
 			}
-			game.currentPlayeMovePiece(face);
-			Square cs = game.currentPlayerSquare();
-			// set current status
-			if (cs instanceof FreezeSquare) {
-				// game.currentPlayer().setFreeze(true);
-				currentStatus.setText(cs.toString());
-			} else if (cs instanceof SpecialSquare) {
-				currentStatus.setText(cs.toString());
-
-			} else {
-				currentStatus
-						.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
-			}
-
+			game.currentPlayeMovePiece(100-(game.currentPlayerPosition()+face)%100);
+			currentStatus
+			.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
 			// win or not
 			if (game.currentPlayerWins()) {
 				roll.setEnabled(false);
@@ -172,6 +163,7 @@ public class GamePane extends JPanel {
 				controller.add(playAgain);
 				controller.add(replay);
 				turn.setText(game.currentPlayerName() + " WINS!");
+				game.end();
 			}
 		});
 	}
@@ -185,8 +177,9 @@ public class GamePane extends JPanel {
 	 *            of squares to move
 	 */
 	protected void move(int playerIndex, int toNumber, int fromNumber) {
-		if (game.currentPlayerWins() && toNumber - fromNumber == 1) {
-			game.end();
+		// piece go back when go more than Board size
+		if(toNumber > game.getBoardGoalNumber() && fromNumber == game.getBoardGoalNumber()){
+			move(playerIndex, 100 - toNumber%100, -1);
 			return;
 		}
 		Timer timer = new Timer(10, null);
@@ -230,17 +223,23 @@ public class GamePane extends JPanel {
 				if (next != toNumber) // don't reach destination yet
 					move(playerIndex, toNumber, next);
 				else { // reach destination
-					if (game.currentPlayerSquare() instanceof SpecialSquare) {
-						SpecialSquare ss = (SpecialSquare) game.currentPlayerSquare();
+					Square cs = game.currentPlayerSquare();
+					if (cs instanceof SpecialSquare) {
+						SpecialSquare ss = (SpecialSquare) cs;
 						move(playerIndex, ss.getDestination(), -1);
+						currentStatus.setText(cs.toString());
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
-					} else if (game.currentPlayerSquare() instanceof BackwardSquare) {
-						BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
+					} else if (cs instanceof BackwardSquare) {
+						BackwardSquare bs = (BackwardSquare) cs;
 						currentStatus.setText(bs.toString());
 						roll.setEnabled(true);
 						// wait for roll again
 					} else {
-						switchPlayer();
+						if (cs instanceof FreezeSquare)
+							currentStatus.setText(cs.toString());
+						if(!game.isEnd())
+							switchPlayer();
+						
 					}
 				}
 			}
@@ -248,28 +247,32 @@ public class GamePane extends JPanel {
 		timer.start();
 	}
 
+	/**
+	 * switch player when a current player's piece reach a destination
+	 */
 	protected void switchPlayer() {
 		game.switchPlayer();
-		freeze();
+		freeze(); // check this player is on freeze square or not
 		roll.setEnabled(true);
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
 	}
 
+	/**
+	 * checking next players (more than one player because there is a case that
+	 * more than one player are concurrent frozen) are frozen or not. If player
+	 * is frozen skipped his turn.
+	 */
 	protected void freeze() {
 		String whoskip = "";
 		while (game.currentPlayerSquare() instanceof FreezeSquare) {
 			FreezeSquare fs = (FreezeSquare) game.currentPlayerSquare();
-			// check this player have already skipped or not.
-			System.out.println("check " + game.currentPlayerFreeze());
 			if (game.currentPlayerFreeze()) {
 				game.currentPlayer().setFreeze(false);
-				System.out.println(game.currentPlayerName() + " freeze = false");
 				break;
 			} else {
 				game.currentPlayer().setFreeze(true);
 				whoskip += game.currentPlayerName() + ", ";
-				System.out.println(game.currentPlayerName() + "freeze = true");
 				game.switchPlayer();
 			}
 		}

@@ -94,11 +94,15 @@ public class Game extends Observable implements Serializable {
 	}
 
 	public boolean currentPlayerWins() {
-		return board.pieceIsAtGoal(currentPlayer().getPiece());
+		return board.pieceIsAtGoal(currentPlayer().getPiece()); 
 	}
 	
 	public boolean currentPlayerFreeze() {
 		return currentPlayer().isFreeze();
+	}
+	
+	public int getBoardGoalNumber() {
+		return board.getGoalNumber();
 	}
 	
 //	public void start() {
