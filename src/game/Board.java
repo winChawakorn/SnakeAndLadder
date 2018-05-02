@@ -17,7 +17,7 @@ public class Board implements Serializable {
 		squares[20] = new FreezeSquare(20);
 		squares[41] = new FreezeSquare(41);
 		squares[50] = new FreezeSquare(50);
-		squares[65] = new FreezeSquare(70);
+		squares[70] = new FreezeSquare(70);
 		squares[86] = new FreezeSquare(86);
 		squares[97] = new FreezeSquare(97);
 		squares[10] = new BackwardSquare(10);
@@ -26,7 +26,7 @@ public class Board implements Serializable {
 		squares[45] = new BackwardSquare(45);
 		squares[69] = new BackwardSquare(69);
 		squares[77] = new BackwardSquare(77);
-		squares[91] = new BackwardSquare(81);
+		squares[81] = new BackwardSquare(81);
 		squares[2] = new Ladder(2, 38);
 		squares[7] = new Ladder(7, 14);
 		squares[8] = new Ladder(8, 31);
@@ -38,12 +38,12 @@ public class Board implements Serializable {
 		squares[71] = new Ladder(71, 91);
 		squares[78] = new Ladder(78, 98);
 		squares[87] = new Ladder(87, 94);
-		squares[99] = new Ladder(99, 80);
+		squares[99] = new Snake(99, 80);
 		squares[16] = new Snake(16, 6);
 		squares[46] = new Snake(46, 25);
 		squares[49] = new Snake(49, 11);
 		squares[62] = new Snake(62, 19);
-		squares[60] = new Snake(64, 60);
+		squares[64] = new Snake(64, 60);
 		squares[74] = new Snake(74, 53);
 		squares[89] = new Snake(89, 68);
 		squares[92] = new Snake(92, 88);

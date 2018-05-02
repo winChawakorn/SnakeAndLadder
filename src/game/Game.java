@@ -19,6 +19,7 @@ public class Game extends Observable implements Serializable {
 	private boolean notOver;
 	private boolean replayMode;
 	private Thread thread;
+	private String[] nameList = {"RED","BLUE","GREEN","YELLOW"};
 
 
 
@@ -35,7 +36,7 @@ public class Game extends Observable implements Serializable {
 		colorlist.add(Color.YELLOW);
 
 		for (int i = 0; i < numPlayer; i++) {
-			players[i] = new Player("P" + (i + 1), colorlist.get(i));
+			players[i] = new Player(nameList[i], colorlist.get(i));
 			board.addPiece(players[i].getPiece(), 0);
 		}
 	}
