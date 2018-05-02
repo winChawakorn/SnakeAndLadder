@@ -50,33 +50,25 @@ public class GamePane extends JPanel {
 		return this.game;
 	}
 
-	private void init() {
+	protected void init() {
 		setLayout(null);
 
 		JLabel red = new JLabel(new ImageIcon(this.getClass().getResource("/img/red.png")));
 		red.setBounds(50, 645, 47, 61);
-		players.put(game.currentPlayerIndex(), red);
-		game.switchPlayer();
+		players.put(0, red);
 		add(red);
 		JLabel blue = new JLabel(new ImageIcon(this.getClass().getResource("/img/blue.png")));
 		blue.setBounds(100, 645, 47, 61);
-		players.put(game.currentPlayerIndex(), blue);
-		game.switchPlayer();
+		players.put(1, blue);
 		add(blue);
-		if (game.getNumPlayer() >= 3) {
-			JLabel green = new JLabel(new ImageIcon(this.getClass().getResource("/img/green.png")));
-			green.setBounds(150, 645, 47, 61);
-			players.put(game.currentPlayerIndex(), green);
-			game.switchPlayer();
-			add(green);
-		}
-		if (game.getNumPlayer() == 4) {
-			JLabel yellow = new JLabel(new ImageIcon(this.getClass().getResource("/img/yellow.png")));
-			yellow.setBounds(200, 645, 47, 61);
-			players.put(game.currentPlayerIndex(), yellow);
-			game.switchPlayer();
-			add(yellow);
-		}
+		JLabel green = new JLabel(new ImageIcon(this.getClass().getResource("/img/green.png")));
+		green.setBounds(150, 645, 47, 61);
+		players.put(2, green);
+		add(green);
+		JLabel yellow = new JLabel(new ImageIcon(this.getClass().getResource("/img/yellow.png")));
+		yellow.setBounds(200, 645, 47, 61);
+		players.put(3, yellow);
+		add(yellow);
 		JLabel board = new JLabel(new ImageIcon(this.getClass().getResource("/img/board.png")));
 		board.setBounds(300, 0, 720, 720);
 		add(board);
