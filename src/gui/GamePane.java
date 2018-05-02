@@ -17,7 +17,6 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import game.BackwardSquare;
-import game.Board;
 import game.FreezeSquare;
 import game.Game;
 import game.SpecialSquare;
@@ -156,14 +155,18 @@ public class GamePane extends JPanel {
 			currentStatus.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
 			// win or not
 			if (game.currentPlayerWins()) {
-				roll.setEnabled(false);
-				controller.remove(roll);
-				controller.add(playAgain);
-				controller.add(replay);
-				turn.setText(game.currentPlayerName() + " WINS!");
-				game.end();
+				end();
 			}
 		});
+	}
+
+	protected void end() {
+		roll.setEnabled(false);
+		controller.remove(roll);
+		controller.add(playAgain);
+		controller.add(replay);
+		turn.setText(game.currentPlayerName() + " WINS!");
+		game.end();
 	}
 
 	/**
