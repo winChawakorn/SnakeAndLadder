@@ -159,12 +159,8 @@ public class ClientGameUI extends GamePane {
 					return;
 				move(game.currentPlayerIndex(), game.currentPlayerPosition(), game.previousPlayerPosition());
 				if (game.currentPlayerWins()) {
-					game.end();
 					playerIndex = 0;
-					roll.setEnabled(false);
-					controller.remove(roll);
-					controller.add(playAgain);
-					turn.setText(game.currentPlayerName() + " WINS!");
+					end();
 				}
 			}
 		}
