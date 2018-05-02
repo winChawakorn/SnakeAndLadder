@@ -36,10 +36,6 @@ public class GameUI {
 		pane.requestFocusInWindow();
 	}
 
-	public static void alert(String msg) {
-
-	}
-
 	private void run() {
 		frame.setVisible(true);
 	}

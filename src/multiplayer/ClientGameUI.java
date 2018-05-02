@@ -94,11 +94,6 @@ public class ClientGameUI extends GamePane {
 		roll.setEnabled(false);
 		if (getGame().currentPlayerIndex() == playerIndex)
 			roll.setEnabled(true);
-		// try {
-		// client.sendToServer(getGame());
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 	}
 
 	@Override
@@ -147,7 +142,9 @@ public class ClientGameUI extends GamePane {
 				setGame((Game) o);
 				Game game = getGame();
 				if (game.isEnd()) {
-					GameUI.setPanel(new MenuPane());
+					MenuPane menu = new MenuPane();
+					GameUI.setPanel(menu);
+					menu.alert("Another player leave the game");
 					return;
 				}
 				if (playerIndex >= game.getNumPlayer() || playerIndex < 0)
