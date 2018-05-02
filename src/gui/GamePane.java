@@ -17,7 +17,6 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import game.BackwardSquare;
-import game.Board;
 import game.FreezeSquare;
 import game.Game;
 import game.SpecialSquare;
@@ -270,7 +269,6 @@ public class GamePane extends JPanel {
 	protected void freeze() {
 		String whoskip = "";
 		while (game.currentPlayerSquare() instanceof FreezeSquare) {
-			FreezeSquare fs = (FreezeSquare) game.currentPlayerSquare();
 			if (game.currentPlayerFreeze()) {
 				game.currentPlayer().setFreeze(false);
 				break;
