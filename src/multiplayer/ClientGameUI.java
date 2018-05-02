@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Menu;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
@@ -23,6 +24,7 @@ import com.lloseng.ocsf.client.AbstractClient;
 import game.Game;
 import gui.GamePane;
 import gui.GameUI;
+import gui.MenuPane;
 
 public class ClientGameUI extends GamePane {
 
@@ -31,6 +33,7 @@ public class ClientGameUI extends GamePane {
 	private JLabel multiplayerStatus;
 	private JPanel multiplayerMenu;
 	private JButton start;
+	private JLabel spectator;
 
 	public ClientGameUI() throws IOException {
 		super(new Game(2));
@@ -62,6 +65,10 @@ public class ClientGameUI extends GamePane {
 		multiplayerMenu.add(start, new GridBagConstraints());
 		add(multiplayerMenu);
 		super.init();
+		spectator = new JLabel("You're spectator");
+		spectator.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
+		spectator.setVisible(false);
+		controller.add(spectator);
 		roll.setVisible(false);
 	}
 
@@ -82,6 +89,19 @@ public class ClientGameUI extends GamePane {
 	}
 
 	@Override
+	protected void backward() {
+		super.backward();
+		roll.setEnabled(false);
+		if (getGame().currentPlayerIndex() == playerIndex)
+			roll.setEnabled(true);
+		// try {
+		// client.sendToServer(getGame());
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+	}
+
+	@Override
 	protected void switchPlayer() {
 		getGame().switchPlayer();
 		freeze();
@@ -97,10 +117,16 @@ public class ClientGameUI extends GamePane {
 			super(host, port);
 		}
 
+		private int num = 0;
+
 		@Override
 		protected void handleMessageFromServer(Object o) {
 			if (o instanceof Integer) {
-				int num = (int) o;
+				if ((int) o < num && playerIndex > 0) {
+					playerIndex--;
+					return;
+				}
+				num = (int) o;
 				if (playerIndex == -1)
 					playerIndex = num - 1;
 				multiplayerStatus.setText(num + " / 4 players");
@@ -120,6 +146,12 @@ public class ClientGameUI extends GamePane {
 				revalidate();
 				setGame((Game) o);
 				Game game = getGame();
+				if (game.isEnd()) {
+					GameUI.setPanel(new MenuPane());
+					return;
+				}
+				if (playerIndex >= game.getNumPlayer() || playerIndex < 0)
+					spectator.setVisible(true);
 				if (game.currentPlayerIndex() != playerIndex)
 					roll.setEnabled(false);
 				dice.setText(game.currentPlayerPosition() - game.previousPlayerPosition() + "");

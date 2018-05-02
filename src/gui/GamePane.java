@@ -134,6 +134,7 @@ public class GamePane extends JPanel {
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
+			face = 50;
 			dice.setText(face + "");
 			if (game.currentPlayerSquare() instanceof BackwardSquare) {
 				face = (-1) * face;
@@ -222,10 +223,7 @@ public class GamePane extends JPanel {
 						move(playerIndex, ss.getDestination(), -1);
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
 					} else if (game.currentPlayerSquare() instanceof BackwardSquare) {
-						BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
-						currentStatus.setText(bs.toString());
-						roll.setEnabled(true);
-						// wait for roll again
+						backward();
 					} else {
 						switchPlayer();
 					}
@@ -233,6 +231,13 @@ public class GamePane extends JPanel {
 			}
 		});
 		timer.start();
+	}
+
+	protected void backward() {
+		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
+		currentStatus.setText(bs.toString());
+		roll.setEnabled(true);
+		// wait for roll again
 	}
 
 	protected void switchPlayer() {
