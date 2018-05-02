@@ -144,15 +144,17 @@ public class GamePane extends JPanel {
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
 			dice.setText(face + "");
+			int destination = game.currentPlayerPosition() + face;
 			if (game.currentPlayerSquare() instanceof BackwardSquare) {
 				face = (-1) * face;
-				move(game.currentPlayerIndex(), game.currentPlayerPosition() + face, -1);
+				move(game.currentPlayerIndex(), destination, -1);
 
 			} else {
-				move(game.currentPlayerIndex(), game.currentPlayerPosition() + face, game.currentPlayerPosition());
+				move(game.currentPlayerIndex(), destination, game.currentPlayerPosition());
 
 			}
-			game.currentPlayeMovePiece(100 - (game.currentPlayerPosition() + face) % 100);
+			if(destination > 100) destination = 100 - (destination) % 100;
+			game.currentPlayeMovePiece(destination);
 			currentStatus.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
 			// win or not
 			if (game.currentPlayerWins()) {
