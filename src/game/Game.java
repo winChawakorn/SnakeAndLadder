@@ -3,10 +3,10 @@ package game;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Observable;
 import java.io.Serializable;
 
-public class Game implements Serializable {
+public class Game extends Observable implements Serializable {
 
 	private Player[] players;
 	private Die die;
@@ -16,6 +16,11 @@ public class Game implements Serializable {
 	private boolean ended;
 	private List<Color> colorlist;
 	private int numPlayer;
+	private boolean notOver;
+	private boolean replayMode;
+	private Thread thread;
+
+
 
 	public Game(int numPlayer) {
 		this.numPlayer = numPlayer;
@@ -91,4 +96,53 @@ public class Game implements Serializable {
 	public boolean currentPlayerWins() {
 		return board.pieceIsAtGoal(currentPlayer().getPiece());
 	}
+	
+	public boolean currentPlayerFreeze() {
+		return currentPlayer().isFreeze();
+	}
+	
+//	public void start() {
+//		currentPlayer().movePiece(board, (-1)*currentPlayerPosition());
+//		notOver = true;
+//		thread = new Thread() {
+//			@Override
+//			public void run() {
+//				while (notOver) {
+//					if(replayMode)
+//						injectHistoryCommand();
+//					currentPlayer().move();
+//					checkCollisions();
+//					setChanged();
+//					notifyObservers();
+//					waitFor(500);
+//				}
+//			}
+//		};
+//		thread.start();
+//	}
+
+//	private void injectHistoryCommand() {
+//		for (Command history : histories) {
+//			if (history.getTick() == tick) {
+//				history.execute();
+//			}
+//		}
+//	}
+//	
+//	private void checkCollisions() {
+//		for (Enemy e : enemies) {
+//			if (e.hit(player)) {
+//				notOver = false;
+//			}
+//		}
+//	}
+//	
+//	private void waitFor(long delayed) {
+//		try {
+//			Thread.sleep(delayed);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
 }

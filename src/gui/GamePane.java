@@ -31,6 +31,7 @@ public class GamePane extends JPanel {
 	protected JTextField dice;
 	protected JPanel controller;
 	protected JButton playAgain;
+	private JButton replay;
 	protected int face;
 	protected int fromNumber;
 
@@ -120,6 +121,13 @@ public class GamePane extends JPanel {
 			GameUI.setPanel(new GamePane(new Game(game.getNumPlayer())));
 		});
 
+		replay = new JButton("Watch replay");
+		replay.setFont(font);
+		replay.setBackground(Color.WHITE);
+		replay.addActionListener((e) -> {
+			// TODO
+		});
+
 		JPanel rollPane = new JPanel();
 		rollPane.setPreferredSize(new Dimension(300, 80));
 		rollPane.setBackground(new Color(0, 0, 0, 0));
@@ -154,8 +162,12 @@ public class GamePane extends JPanel {
 			game.currentPlayeMovePiece(face);
 			Square cs = game.currentPlayerSquare();
 			// set current status
-			if (cs instanceof FreezeSquare || cs instanceof SpecialSquare) {
+			if (cs instanceof FreezeSquare) {
+				// game.currentPlayer().setFreeze(true);
 				currentStatus.setText(cs.toString());
+			} else if (cs instanceof SpecialSquare) {
+				currentStatus.setText(cs.toString());
+
 			} else {
 				currentStatus
 						.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
@@ -166,6 +178,7 @@ public class GamePane extends JPanel {
 				roll.setEnabled(false);
 				controller.remove(roll);
 				controller.add(playAgain);
+				controller.add(replay);
 				turn.setText(game.currentPlayerName() + " WINS!");
 			}
 		});
@@ -252,16 +265,26 @@ public class GamePane extends JPanel {
 	}
 
 	protected void freeze() {
-		if (game.currentPlayerSquare() instanceof FreezeSquare) {
+		String whoskip = "";
+		while (game.currentPlayerSquare() instanceof FreezeSquare) {
 			FreezeSquare fs = (FreezeSquare) game.currentPlayerSquare();
 			// check this player have already skipped or not.
-			if (fs.getSkipedCount() == 1) {
-				currentStatus.setText("Other player is skipped.");
-				game.switchPlayer();
-				fs.setSkipedCount(0);
+			System.out.println("check " + game.currentPlayerFreeze());
+			if (game.currentPlayerFreeze()) {
+				game.currentPlayer().setFreeze(false);
+				System.out.println(game.currentPlayerName() + " freeze = false");
+				break;
 			} else {
-				fs.setSkipedCount(1);
+				game.currentPlayer().setFreeze(true);
+				whoskip += game.currentPlayerName() + ", ";
+				System.out.println(game.currentPlayerName() + "freeze = true");
+				game.switchPlayer();
 			}
+		}
+
+		if (!whoskip.equals("")) {
+			currentStatus.setForeground(game.currentPlayer().getColor());
+			currentStatus.setText(whoskip + " is/are skipped. Now turn is yours.");
 		}
 	}
 }

@@ -8,11 +8,21 @@ public class Player implements Serializable {
 	private String name;
 	private Piece piece;
 	private Color color;
+	private boolean freeze;
 
 	public Player(String name, Color color) {
 		this.name = name;
 		this.color = color;
 		piece = new Piece();
+		freeze = false;
+	}
+
+	public boolean isFreeze() {
+		return freeze;
+	}
+
+	public void setFreeze(boolean freeze) {
+		this.freeze = freeze;
 	}
 
 	public int roll(Die die) {
