@@ -42,6 +42,7 @@ public class GamePane extends JPanel {
 		setGame(game);
 		players = new HashMap<>();
 		init();
+//		bot();
 	}
 
 	public void setGame(Game game) {
@@ -158,18 +159,19 @@ public class GamePane extends JPanel {
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
 			dice.setText(face + "");
-			int destination = game.currentPlayerPosition() + face;
+			// if find backward square
 			if (game.currentPlayerSquare() instanceof BackwardSquare) {
-				face = (-1) * face;
-				move(game.currentPlayerIndex(), destination, -1);
-
+				face = (-1)*face;
+				move(game.currentPlayerIndex(), fromNumber + face, -1);
 			} else {
-				move(game.currentPlayerIndex(), destination, game.currentPlayerPosition());
-
+				move(game.currentPlayerIndex(), fromNumber + face, fromNumber);
 			}
-			if (destination > 100)
-				destination = 100 - (destination) % 100;
-			game.currentPlayeMovePiece(destination);
+			// game move piece to final square
+			if(fromNumber + face <= 100) 
+				game.currentPlayeMovePiece(face);
+			else
+				game.currentPlayeMovePiece((100 - (fromNumber + face) % 100) - fromNumber);
+			System.out.println(game.currentPlayerName()+",face:"+face+",cpos:"+game.currentPlayerPosition());
 			currentStatus.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
 			// win or not
 			if (game.currentPlayerWins()) {
@@ -303,6 +305,12 @@ public class GamePane extends JPanel {
 		if (!whoskip.equals("")) {
 			currentStatus.setForeground(game.currentPlayer().getColor());
 			currentStatus.setText(whoskip + " is/are skipped. Now turn is yours.");
+		}
+	}
+	
+	public void bot() {
+		while(!game.isEnd()){
+			addRollListener();
 		}
 	}
 }

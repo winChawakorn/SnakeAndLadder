@@ -38,6 +38,7 @@ public class GameUI {
 
 	private void run() {
 		frame.setVisible(true);
+		
 	}
 
 	public static void main(String[] args) {
