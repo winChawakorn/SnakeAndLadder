@@ -30,12 +30,12 @@ public class ConsoleUI implements Serializable {
 			// TODO if player is on the FREEZE QUARE, print something and continue;
 			if (game.currentPlayerSquare() instanceof FreezeSquare) {
 				FreezeSquare freeze = (FreezeSquare) game.currentPlayerSquare();
-				if(freeze.getSkipedCount() == 1){
+				if(game.currentPlayerFreeze()){
 					game.switchPlayer();
-					freeze.setSkipedCount(0);
+					game.currentPlayer().setFreeze(false);
 					continue;
 				}else
-					freeze.setSkipedCount(1);
+					game.currentPlayer().setFreeze(true);
 			}
 			System.out.println("Please hit enter to roll a die.");
 			String enter = scanner.nextLine();

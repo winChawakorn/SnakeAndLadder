@@ -4,24 +4,9 @@ import java.io.Serializable;
 
 public class FreezeSquare extends Square implements Serializable{
 
-	private int skipedCount;
+	
 	public FreezeSquare(int number) {
 		super(number);
-		skipedCount = 1;
-	}
-	
-	public int getSkipedCount() {
-		return skipedCount;
-	}
-
-	/**
-	 * 
-	 * @param skipedCount
-	 *            is 1 current player must be skipped one turn, otherwise means
-	 *            current player have already been skipped
-	 */
-	public void setSkipedCount(int skipedCount) {
-		this.skipedCount = skipedCount;
 	}
 
 
