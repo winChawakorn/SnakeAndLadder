@@ -143,7 +143,7 @@ public class GamePane extends JPanel {
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
-			face = 102;
+//			face = 102;
 			dice.setText(face + "");
 			if (game.currentPlayerSquare() instanceof BackwardSquare) {
 				face = (-1) * face;
