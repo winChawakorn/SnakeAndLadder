@@ -23,6 +23,7 @@ public class GameServer extends AbstractServer {
 	public void end() {
 		isStart = false;
 		game = new Game(2);
+		connections.clear();
 	}
 
 	public GameServer(int port) {
@@ -56,7 +57,7 @@ public class GameServer extends AbstractServer {
 			if (isStart)
 				client.sendToClient(game);
 			else
-				sendToAllClients(getNumberOfClients());
+				sendToAllClients(connections.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -67,10 +68,13 @@ public class GameServer extends AbstractServer {
 		super.clientDisconnected(client);
 		System.out.println("Someone disconnected");
 		connections.remove(client);
-		if (connections.size() < 2) {
-			end();
-			game = new Game(2);
+		if (!isStart) {
+			sendToAllClients(connections.size());
+			return;
 		}
+		end();
+		game.end();
+		sendToAllClients(game);
 	}
 
 	public static void main(String[] args) {

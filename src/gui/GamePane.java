@@ -143,7 +143,6 @@ public class GamePane extends JPanel {
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
-			face = 102;
 			dice.setText(face + "");
 			if (game.currentPlayerSquare() instanceof BackwardSquare) {
 				face = (-1) * face;
@@ -153,9 +152,8 @@ public class GamePane extends JPanel {
 				move(game.currentPlayerIndex(), game.currentPlayerPosition() + face, game.currentPlayerPosition());
 
 			}
-			game.currentPlayeMovePiece(100-(game.currentPlayerPosition()+face)%100);
-			currentStatus
-			.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
+			game.currentPlayeMovePiece(100 - (game.currentPlayerPosition() + face) % 100);
+			currentStatus.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
 			// win or not
 			if (game.currentPlayerWins()) {
 				roll.setEnabled(false);
@@ -178,8 +176,8 @@ public class GamePane extends JPanel {
 	 */
 	protected void move(int playerIndex, int toNumber, int fromNumber) {
 		// piece go back when go more than Board size
-		if(toNumber > game.getBoardGoalNumber() && fromNumber == game.getBoardGoalNumber()){
-			move(playerIndex, 100 - toNumber%100, -1);
+		if (toNumber > game.getBoardGoalNumber() && fromNumber == game.getBoardGoalNumber()) {
+			move(playerIndex, 100 - toNumber % 100, -1);
 			return;
 		}
 		Timer timer = new Timer(10, null);
@@ -229,22 +227,26 @@ public class GamePane extends JPanel {
 						move(playerIndex, ss.getDestination(), -1);
 						currentStatus.setText(cs.toString());
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
-					} else if (cs instanceof BackwardSquare) {
-						BackwardSquare bs = (BackwardSquare) cs;
-						currentStatus.setText(bs.toString());
-						roll.setEnabled(true);
-						// wait for roll again
+					} else if (game.currentPlayerSquare() instanceof BackwardSquare) {
+						backward();
 					} else {
 						if (cs instanceof FreezeSquare)
 							currentStatus.setText(cs.toString());
-						if(!game.isEnd())
+						if (!game.isEnd())
 							switchPlayer();
-						
+
 					}
 				}
 			}
 		});
 		timer.start();
+	}
+
+	protected void backward() {
+		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
+		currentStatus.setText(bs.toString());
+		roll.setEnabled(true);
+		// wait for roll again
 	}
 
 	/**
@@ -259,9 +261,9 @@ public class GamePane extends JPanel {
 	}
 
 	/**
-	 * checking next players (more than one player because there is a case that
-	 * more than one player are concurrent frozen) are frozen or not. If player
-	 * is frozen skipped his turn.
+	 * checking next players (more than one player because there is a case that more
+	 * than one player are concurrent frozen) are frozen or not. If player is frozen
+	 * skipped his turn.
 	 */
 	protected void freeze() {
 		String whoskip = "";
