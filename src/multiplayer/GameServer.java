@@ -12,7 +12,18 @@ import game.Game;
 
 public class GameServer extends AbstractServer {
 
-	List<ConnectionToClient> connections;
+	private List<ConnectionToClient> connections;
+	private Game game;
+	private boolean isStart = false;
+
+	public void start() {
+		isStart = true;
+	}
+
+	public void end() {
+		isStart = false;
+		game = new Game(2);
+	}
 
 	public GameServer(int port) {
 		super(port);
@@ -22,17 +33,30 @@ public class GameServer extends AbstractServer {
 	@Override
 	protected void handleMessageFromClient(Object o, ConnectionToClient client) {
 		if (o instanceof Game) {
-			sendToAllClients((Game) o);
+			game = (Game) o;
+			if (game.getNumPlayer() < 2 || game.getNumPlayer() > 4)
+				return;
+			if (!isStart)
+				game = new Game(game.getNumPlayer());
+			start();
+			if (game.currentPlayerWins())
+				end();
+			sendToAllClients(game);
 		}
 	}
 
 	@Override
 	protected void clientConnected(ConnectionToClient client) {
+		if (connections.contains(client))
+			return;
 		super.clientConnected(client);
 		System.out.println(client.getInetAddress() + " connected");
 		connections.add(client);
 		try {
-			client.sendToClient(getNumberOfClients());
+			if (isStart)
+				client.sendToClient(game);
+			else
+				sendToAllClients(getNumberOfClients());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -43,6 +67,10 @@ public class GameServer extends AbstractServer {
 		super.clientDisconnected(client);
 		System.out.println("Someone disconnected");
 		connections.remove(client);
+		if (connections.size() < 2) {
+			end();
+			game = new Game(2);
+		}
 	}
 
 	public static void main(String[] args) {
