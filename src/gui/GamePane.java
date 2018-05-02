@@ -31,9 +31,11 @@ public class GamePane extends JPanel {
 	protected JTextField dice;
 	protected JPanel controller;
 	protected JButton playAgain;
+	protected JButton mainMenu;
 	private JButton replay;
 	protected int face;
 	protected int fromNumber;
+	protected JLabel spectator;
 
 	public GamePane(Game game) {
 		super();
@@ -78,14 +80,18 @@ public class GamePane extends JPanel {
 		controller.setBackground(Color.PINK);
 		controller.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
 		JLabel label = new JLabel("Snake and Ladder");
-		label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
+		label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
+
+		spectator = new JLabel("You're spectator");
+		spectator.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
+		spectator.setVisible(false);
+		spectator.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
 
 		Font font = new Font("Comic Sans MS", Font.PLAIN, 30);
 		turn = new JLabel(game.currentPlayerName() + "'s turn", SwingConstants.CENTER);
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setFont(font);
-		turn.setBorder(BorderFactory.createEmptyBorder(80, 0, 0, 0));
-		turn.setPreferredSize(new Dimension(300, 180));
+		turn.setPreferredSize(new Dimension(300, 150));
 
 		font = new Font("Comic Sans MS", Font.PLAIN, 20);
 		currentStatus = new JTextArea("Click roll button to play");
@@ -120,6 +126,13 @@ public class GamePane extends JPanel {
 			// TODO
 		});
 
+		mainMenu = new JButton("Main menu");
+		mainMenu.setFont(font);
+		mainMenu.setBackground(Color.WHITE);
+		mainMenu.addActionListener((e) -> {
+			GameUI.setPanel(new MenuPane());
+		});
+
 		JPanel rollPane = new JPanel();
 		rollPane.setPreferredSize(new Dimension(300, 80));
 		rollPane.setBackground(new Color(0, 0, 0, 0));
@@ -129,6 +142,8 @@ public class GamePane extends JPanel {
 		addRollListener();
 
 		controller.add(label);
+		controller.add(spectator);
+		controller.add(mainMenu);
 		controller.add(turn);
 		controller.add(dicePane);
 		controller.add(roll);
@@ -152,7 +167,8 @@ public class GamePane extends JPanel {
 				move(game.currentPlayerIndex(), destination, game.currentPlayerPosition());
 
 			}
-			if(destination > 100) destination = 100 - (destination) % 100;
+			if (destination > 100)
+				destination = 100 - (destination) % 100;
 			game.currentPlayeMovePiece(destination);
 			currentStatus.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
 			// win or not
@@ -167,6 +183,7 @@ public class GamePane extends JPanel {
 		controller.remove(roll);
 		controller.add(playAgain);
 		controller.add(replay);
+		controller.add(mainMenu);
 		turn.setText(game.currentPlayerName() + " WINS!");
 		game.end();
 	}

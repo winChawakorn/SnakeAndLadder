@@ -13,8 +13,15 @@ import game.Game;
 public class GameServer extends AbstractServer {
 
 	private List<ConnectionToClient> connections;
+	private List<ConnectionToClient> players;
 	private Game game;
 	private boolean isStart = false;
+
+	public GameServer(int port) {
+		super(port);
+		connections = new ArrayList<>();
+		players = new ArrayList<>();
+	}
 
 	public void start() {
 		isStart = true;
@@ -24,11 +31,7 @@ public class GameServer extends AbstractServer {
 		isStart = false;
 		game = new Game(2);
 		connections.clear();
-	}
-
-	public GameServer(int port) {
-		super(port);
-		connections = new ArrayList<>();
+		players.clear();
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class GameServer extends AbstractServer {
 			if (!isStart)
 				game = new Game(game.getNumPlayer());
 			start();
-			if (game.currentPlayerWins())
+			if (game.currentPlayerWins() || game.isEnd())
 				end();
 			sendToAllClients(game);
 		}
@@ -54,10 +57,12 @@ public class GameServer extends AbstractServer {
 		System.out.println(client.getInetAddress() + " connected");
 		connections.add(client);
 		try {
-			if (isStart)
+			if (isStart) {
 				client.sendToClient(game);
-			else
+			} else {
 				sendToAllClients(connections.size());
+				players.add(client);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -70,11 +75,16 @@ public class GameServer extends AbstractServer {
 		connections.remove(client);
 		if (!isStart) {
 			sendToAllClients(connections.size());
+			if (players.contains(client))
+				players.remove(client);
 			return;
 		}
-		end();
-		game.end();
-		sendToAllClients(game);
+		if (players.contains(client)) {
+			players.remove(client);
+			end();
+			game.end();
+			sendToAllClients(game);
+		}
 	}
 
 	public static void main(String[] args) {

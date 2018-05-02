@@ -78,7 +78,7 @@ public class MenuPane extends JPanel {
 			try {
 				GameUI.setPanel(new ClientGameUI());
 			} catch (IOException e1) {
-				alert("Server closes");
+				alert("Server is closed");
 			}
 		});
 

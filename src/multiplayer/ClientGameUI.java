@@ -33,12 +33,20 @@ public class ClientGameUI extends GamePane {
 	private JLabel multiplayerStatus;
 	private JPanel multiplayerMenu;
 	private JButton start;
-	private JLabel spectator;
 
 	public ClientGameUI() throws IOException {
 		super(new Game(2));
 		client = new Client("localhost", 3006);
 		client.openConnection();
+		if (mainMenu.getActionListeners().length > 0)
+			mainMenu.removeActionListener(mainMenu.getActionListeners()[0]);
+		mainMenu.addActionListener((e) -> {
+			GameUI.setPanel(new MenuPane());
+			try {
+				client.closeConnection();
+			} catch (IOException e1) {
+			}
+		});
 	}
 
 	@Override
@@ -65,10 +73,6 @@ public class ClientGameUI extends GamePane {
 		multiplayerMenu.add(start, new GridBagConstraints());
 		add(multiplayerMenu);
 		super.init();
-		spectator = new JLabel("You're spectator");
-		spectator.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
-		spectator.setVisible(false);
-		controller.add(spectator);
 		roll.setVisible(false);
 	}
 
@@ -104,6 +108,12 @@ public class ClientGameUI extends GamePane {
 			roll.setEnabled(true);
 		turn.setForeground(getGame().currentPlayer().getColor());
 		turn.setText(getGame().currentPlayerName() + "'s turn");
+	}
+
+	@Override
+	protected void end() {
+		super.end();
+		controller.remove(playAgain);
 	}
 
 	public class Client extends AbstractClient {
@@ -145,10 +155,15 @@ public class ClientGameUI extends GamePane {
 					MenuPane menu = new MenuPane();
 					GameUI.setPanel(menu);
 					menu.alert("Another player leave the game");
+					try {
+						client.closeConnection();
+					} catch (IOException e1) {
+					}
 					return;
 				}
-				if (playerIndex >= game.getNumPlayer() || playerIndex < 0)
+				if (playerIndex >= game.getNumPlayer() || playerIndex < 0) {
 					spectator.setVisible(true);
+				}
 				if (game.currentPlayerIndex() != playerIndex)
 					roll.setEnabled(false);
 				dice.setText(game.currentPlayerPosition() - game.previousPlayerPosition() + "");
