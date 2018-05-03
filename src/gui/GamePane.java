@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -22,7 +24,7 @@ import game.Game;
 import game.SpecialSquare;
 import game.Square;
 
-public class GamePane extends JPanel {
+public class GamePane extends JPanel implements Observer {
 	private Game game;
 	private JTextArea currentStatus;
 	protected Map<Integer, JLabel> players;
@@ -42,7 +44,7 @@ public class GamePane extends JPanel {
 		setGame(game);
 		players = new HashMap<>();
 		init();
-//		bot();
+		game.addObserver(this);
 	}
 
 	public void setGame(Game game) {
@@ -124,7 +126,10 @@ public class GamePane extends JPanel {
 		replay.setFont(font);
 		replay.setBackground(Color.WHITE);
 		replay.addActionListener((e) -> {
-			// TODO
+			game.turnOnReplayMode();
+//			while (!game.isEnd()) {
+//				roll.doClick();
+//			}
 		});
 
 		mainMenu = new JButton("Main menu");
@@ -172,7 +177,7 @@ public class GamePane extends JPanel {
 			else
 				game.currentPlayeMovePiece((100 - (fromNumber + face) % 100) - fromNumber);
 			System.out.println(game.currentPlayerName()+",face:"+face+",cpos:"+game.currentPlayerPosition());
-			currentStatus.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
+			currentStatus.setText(game.currentPlayerName()+" go from number " + fromNumber + " to number " + game.currentPlayerPosition());
 			// win or not
 			if (game.currentPlayerWins()) {
 				end();
@@ -304,13 +309,13 @@ public class GamePane extends JPanel {
 
 		if (!whoskip.equals("")) {
 			currentStatus.setForeground(game.currentPlayer().getColor());
-			currentStatus.setText(whoskip + " is/are skipped. Now turn is yours.");
+			currentStatus.setText(whoskip + " is/are skipped. Now turn is "+game.currentPlayerName()+" turn.");
 		}
 	}
-	
-	public void bot() {
-		while(!game.isEnd()){
-			addRollListener();
-		}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
 	}
 }

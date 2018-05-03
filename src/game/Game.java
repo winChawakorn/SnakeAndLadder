@@ -16,15 +16,16 @@ public class Game extends Observable implements Serializable {
 	private boolean ended;
 	private List<Color> colorlist;
 	private int numPlayer;
-	private boolean notOver;
 	private boolean replayMode;
 	private Thread thread;
 	private String[] nameList = {"RED","BLUE","GREEN","YELLOW"};
-
+	private List<Integer> faceHistorys;
+	private int tick;
 
 
 	public Game(int numPlayer) {
 		this.numPlayer = numPlayer;
+		faceHistorys = new ArrayList<>();
 		players = new Player[numPlayer];
 		board = new Board();
 		die = new Die();
@@ -41,6 +42,11 @@ public class Game extends Observable implements Serializable {
 		}
 	}
 
+	public void turnOnReplayMode(){
+		replayMode = true;
+		tick = 0;
+	}
+	
 	public int getNumPlayer() {
 		return numPlayer;
 	}
@@ -55,6 +61,7 @@ public class Game extends Observable implements Serializable {
 
 	public void end() {
 		ended = true;
+		tick = 0;
 	}
 
 	public Player currentPlayer() {
@@ -82,7 +89,12 @@ public class Game extends Observable implements Serializable {
 	}
 
 	public int currentPlayerRollDice() {
-		return currentPlayer().roll(die);
+		if(replayMode){
+			return faceHistorys.get(tick++);
+		}
+		int face = currentPlayer().roll(die);
+		faceHistorys.add(face);
+		return face;
 	}
 
 	public void currentPlayeMovePiece(int steps) {
@@ -105,49 +117,5 @@ public class Game extends Observable implements Serializable {
 	public int getBoardGoalNumber() {
 		return board.getGoalNumber();
 	}
-	
-//	public void start() {
-//		currentPlayer().movePiece(board, (-1)*currentPlayerPosition());
-//		notOver = true;
-//		thread = new Thread() {
-//			@Override
-//			public void run() {
-//				while (notOver) {
-//					if(replayMode)
-//						injectHistoryCommand();
-//					currentPlayer().move();
-//					checkCollisions();
-//					setChanged();
-//					notifyObservers();
-//					waitFor(500);
-//				}
-//			}
-//		};
-//		thread.start();
-//	}
-
-//	private void injectHistoryCommand() {
-//		for (Command history : histories) {
-//			if (history.getTick() == tick) {
-//				history.execute();
-//			}
-//		}
-//	}
-//	
-//	private void checkCollisions() {
-//		for (Enemy e : enemies) {
-//			if (e.hit(player)) {
-//				notOver = false;
-//			}
-//		}
-//	}
-//	
-//	private void waitFor(long delayed) {
-//		try {
-//			Thread.sleep(delayed);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 }
