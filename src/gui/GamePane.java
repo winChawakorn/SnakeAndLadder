@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,13 +24,13 @@ import game.SpecialSquare;
 import game.Square;
 
 public class GamePane extends JPanel {
-	private Game game;
-	private JTextArea currentStatus;
+	protected Game game;
+	protected JTextArea currentStatus;
 	protected Map<Integer, JLabel> players;
 	protected JButton roll;
 	protected JLabel turn;
 	protected JTextField dice;
-	protected JPanel controller;
+	protected JLabel controller;
 	protected JButton playAgain;
 	protected JButton mainMenu;
 	private JButton replay;
@@ -39,19 +40,20 @@ public class GamePane extends JPanel {
 
 	public GamePane(Game game) {
 		super();
-		setGame(game);
+		this.game = game;
 		players = new HashMap<>();
 		init();
-//		bot();
+		// roll.doClick();
+		// bot();
 	}
 
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
-	public Game getGame() {
-		return this.game;
-	}
+	// public void setGame(Game game) {
+	// this.game = game;
+	// }
+	//
+	// public Game getGame() {
+	// return this.game;
+	// }
 
 	protected void init() {
 		setLayout(null);
@@ -68,20 +70,22 @@ public class GamePane extends JPanel {
 		green.setBounds(150, 645, 47, 61);
 		players.put(2, green);
 		add(green);
-		JLabel yellow = new JLabel(new ImageIcon(this.getClass().getResource("/img/yellow.png")));
-		yellow.setBounds(200, 645, 47, 61);
-		players.put(3, yellow);
-		add(yellow);
+		JLabel purple = new JLabel(new ImageIcon(this.getClass().getResource("/img/purple.png")));
+		purple.setBounds(200, 645, 47, 61);
+		players.put(3, purple);
+		add(purple);
 		JLabel board = new JLabel(new ImageIcon(this.getClass().getResource("/img/board.png")));
 		board.setBounds(300, 0, 720, 720);
 		add(board);
 
-		controller = new JPanel();
+		controller = new JLabel(new ImageIcon(this.getClass().getResource("/img/forest.png")));
+		controller.setLayout(new FlowLayout());
 		controller.setBounds(0, 0, 300, 720);
 		controller.setBackground(Color.PINK);
 		controller.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
-		JLabel label = new JLabel("Snake and Ladder");
-		label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
+		// JLabel label = new JLabel("Snake and Ladder");
+		JLabel label = new JLabel(new ImageIcon(this.getClass().getResource("/img/text_small.png")));
+		// label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
 
 		spectator = new JLabel("You're spectator");
 		spectator.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
@@ -99,7 +103,7 @@ public class GamePane extends JPanel {
 		currentStatus.setPreferredSize(new Dimension(230, 170));
 		currentStatus.setForeground(game.currentPlayer().getColor());
 		currentStatus.setFont(font);
-		currentStatus.setBackground(Color.PINK);
+		currentStatus.setBackground(new Color(0, 0, 0, 0));
 		currentStatus.setLineWrap(true);
 		currentStatus.setWrapStyleWord(true);
 		currentStatus.setEditable(false);
@@ -160,24 +164,25 @@ public class GamePane extends JPanel {
 			face = game.currentPlayerRollDice();
 			dice.setText(face + "");
 			// if find backward square
-			if (game.currentPlayerSquare() instanceof BackwardSquare) {
-				face = (-1)*face;
-				move(game.currentPlayerIndex(), fromNumber + face, -1);
-			} else {
-				move(game.currentPlayerIndex(), fromNumber + face, fromNumber);
-			}
+			if (game.currentPlayerSquare() instanceof BackwardSquare)
+				face = (-1) * face;
 			// game move piece to final square
-			if(fromNumber + face <= 100) 
+			if (fromNumber + face <= 100)
 				game.currentPlayeMovePiece(face);
 			else
 				game.currentPlayeMovePiece((100 - (fromNumber + face) % 100) - fromNumber);
-			System.out.println(game.currentPlayerName()+",face:"+face+",cpos:"+game.currentPlayerPosition());
+			move(game.currentPlayerIndex(), fromNumber + face, fromNumber);
 			currentStatus.setText("You go from number " + fromNumber + " to number " + game.currentPlayerPosition());
+			// System.out.println(game.currentPlayerName() + ",face:" + face + ",cpos:" +
+			// game.currentPlayerPosition());
 			// win or not
 			if (game.currentPlayerWins()) {
 				end();
 			}
+			repaint();
+			revalidate();
 		});
+
 	}
 
 	protected void end() {
@@ -202,6 +207,10 @@ public class GamePane extends JPanel {
 		// piece go back when go more than Board size
 		if (toNumber > game.getBoardGoalNumber() && fromNumber == game.getBoardGoalNumber()) {
 			move(playerIndex, 100 - toNumber % 100, -1);
+			return;
+		}
+		if (toNumber < fromNumber) {
+			move(playerIndex, toNumber, -1);
 			return;
 		}
 		Timer timer = new Timer(10, null);
@@ -258,10 +267,11 @@ public class GamePane extends JPanel {
 							currentStatus.setText(cs.toString());
 						if (!game.isEnd())
 							switchPlayer();
-
 					}
 				}
 			}
+			repaint();
+			revalidate();
 		});
 		timer.start();
 	}
@@ -270,6 +280,7 @@ public class GamePane extends JPanel {
 		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 		currentStatus.setText(bs.toString());
 		roll.setEnabled(true);
+		// roll.doClick();
 		// wait for roll again
 	}
 
@@ -280,6 +291,7 @@ public class GamePane extends JPanel {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
 		roll.setEnabled(true);
+		// roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
 	}
@@ -307,9 +319,9 @@ public class GamePane extends JPanel {
 			currentStatus.setText(whoskip + " is/are skipped. Now turn is yours.");
 		}
 	}
-	
+
 	public void bot() {
-		while(!game.isEnd()){
+		while (!game.isEnd()) {
 			addRollListener();
 		}
 	}
