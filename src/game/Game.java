@@ -18,10 +18,9 @@ public class Game extends Observable implements Serializable {
 	private int numPlayer;
 	private boolean replayMode;
 	private Thread thread;
-	private String[] nameList = {"RED","BLUE","GREEN","YELLOW"};
+	private String[] nameList = { "RED", "BLUE", "GREEN", "YELLOW" };
 	private List<Integer> faceHistorys;
 	private int tick;
-
 
 	public Game(int numPlayer) {
 		this.numPlayer = numPlayer;
@@ -33,8 +32,8 @@ public class Game extends Observable implements Serializable {
 		colorlist = new ArrayList<Color>();
 		colorlist.add(Color.RED);
 		colorlist.add(Color.BLUE);
-		colorlist.add(Color.GREEN);
-		colorlist.add(Color.YELLOW);
+		colorlist.add(new Color(0, 128, 0));
+		colorlist.add(new Color(161, 0, 193));
 
 		for (int i = 0; i < numPlayer; i++) {
 			players[i] = new Player(nameList[i], colorlist.get(i));
@@ -42,11 +41,11 @@ public class Game extends Observable implements Serializable {
 		}
 	}
 
-	public void turnOnReplayMode(){
+	public void turnOnReplayMode() {
 		replayMode = true;
 		tick = 0;
 	}
-	
+
 	public int getNumPlayer() {
 		return numPlayer;
 	}
@@ -89,7 +88,7 @@ public class Game extends Observable implements Serializable {
 	}
 
 	public int currentPlayerRollDice() {
-		if(replayMode){
+		if (replayMode) {
 			return faceHistorys.get(tick++);
 		}
 		int face = currentPlayer().roll(die);
@@ -107,15 +106,14 @@ public class Game extends Observable implements Serializable {
 	}
 
 	public boolean currentPlayerWins() {
-		return board.pieceIsAtGoal(currentPlayer().getPiece()); 
+		return board.pieceIsAtGoal(currentPlayer().getPiece());
 	}
-	
+
 	public boolean currentPlayerFreeze() {
 		return currentPlayer().isFreeze();
 	}
-	
+
 	public int getBoardGoalNumber() {
 		return board.getGoalNumber();
 	}
-	
 }

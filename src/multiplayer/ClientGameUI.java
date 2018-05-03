@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 
 import com.lloseng.ocsf.client.AbstractClient;
 
+import game.BackwardSquare;
 import game.Game;
 import gui.GamePane;
 import gui.GameUI;
@@ -53,9 +54,9 @@ public class ClientGameUI extends GamePane {
 		multiplayerStatus.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 40));
 		start = new JButton("Start");
 		start.addActionListener((e) -> {
-			setGame(new Game(Integer.parseInt(multiplayerStatus.getText().charAt(0) + "")));
+			game = new Game(Integer.parseInt(multiplayerStatus.getText().charAt(0) + ""));
 			try {
-				client.sendToServer(getGame());
+				client.sendToServer(game);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -72,11 +73,17 @@ public class ClientGameUI extends GamePane {
 	@Override
 	protected void addRollListener() {
 		roll.addActionListener((e) -> {
-			Game game = getGame();
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
-			game.currentPlayeMovePiece(face);
+			// if find backward square
+			if (game.currentPlayerSquare() instanceof BackwardSquare)
+				face = (-1) * face;
+			// game move piece to final square
+			if (fromNumber + face <= 100)
+				game.currentPlayeMovePiece(face);
+			else
+				game.currentPlayeMovePiece((100 - (fromNumber + face) % 100) - fromNumber);
 			try {
 				client.sendToServer(game);
 			} catch (IOException e1) {
@@ -89,18 +96,18 @@ public class ClientGameUI extends GamePane {
 	protected void backward() {
 		super.backward();
 		roll.setEnabled(false);
-		if (getGame().currentPlayerIndex() == playerIndex)
+		if (game.currentPlayerIndex() == playerIndex)
 			roll.setEnabled(true);
 	}
 
 	@Override
 	protected void switchPlayer() {
-		getGame().switchPlayer();
+		game.switchPlayer();
 		freeze();
-		if (getGame().currentPlayerIndex() == playerIndex)
+		if (game.currentPlayerIndex() == playerIndex)
 			roll.setEnabled(true);
-		turn.setForeground(getGame().currentPlayer().getColor());
-		turn.setText(getGame().currentPlayerName() + "'s turn");
+		turn.setForeground(game.currentPlayer().getColor());
+		turn.setText(game.currentPlayerName() + "'s turn");
 	}
 
 	@Override
@@ -132,7 +139,7 @@ public class ClientGameUI extends GamePane {
 					start.setVisible(false);
 				else
 					start.setVisible(true);
-				if (getGame().currentPlayerIndex() == playerIndex)
+				if (game.currentPlayerIndex() == playerIndex)
 					roll.setEnabled(true);
 				repaint();
 				revalidate();
@@ -142,8 +149,7 @@ public class ClientGameUI extends GamePane {
 				roll.setVisible(true);
 				repaint();
 				revalidate();
-				setGame((Game) o);
-				Game game = getGame();
+				game = (Game) o;
 				if (game.isEnd()) {
 					MenuPane menu = new MenuPane();
 					GameUI.setPanel(menu);
@@ -159,7 +165,8 @@ public class ClientGameUI extends GamePane {
 				}
 				if (game.currentPlayerIndex() != playerIndex)
 					roll.setEnabled(false);
-				dice.setText(game.currentPlayerPosition() - game.previousPlayerPosition() + "");
+				dice.setText(Math.abs(game.currentPlayerPosition() - game.previousPlayerPosition()) + "");
+				currentStatus.setForeground(game.currentPlayer().getColor());
 				if (game.currentPlayerPosition() == 0)
 					return;
 				move(game.currentPlayerIndex(), game.currentPlayerPosition(), game.previousPlayerPosition());

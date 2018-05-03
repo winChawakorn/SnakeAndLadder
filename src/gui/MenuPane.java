@@ -3,11 +3,13 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,10 +36,11 @@ public class MenuPane extends JPanel {
 	}
 
 	private void init() {
-		setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-		setBackground(new Color(60, 179, 113));
-		setLayout(new BorderLayout());
-		JLabel label = new JLabel("Snake and Ladder", SwingConstants.CENTER);
+		JLabel bg = new JLabel(new ImageIcon(this.getClass().getResource("/img/jungle.jpg")));
+		bg.setLayout(new BorderLayout());
+		bg.setBackground(new Color(60, 179, 113));
+		bg.setLayout(new BorderLayout());
+		JLabel label = new JLabel(new ImageIcon(this.getClass().getResource("/img/text.png")));
 		label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 50));
 		label.setForeground(Color.WHITE);
 
@@ -49,7 +52,7 @@ public class MenuPane extends JPanel {
 		two.setBackground(Color.DARK_GRAY);
 		two.setForeground(Color.ORANGE);
 		two.setFont(btnFont);
-		two.setBounds(350, 50, 200, 100);
+		two.setBounds(1150, 50, 200, 100);
 		two.addActionListener((e) -> {
 			GameUI.setPanel(new GamePane(new Game(2)));
 		});
@@ -57,7 +60,7 @@ public class MenuPane extends JPanel {
 		three.setBackground(Color.DARK_GRAY);
 		three.setForeground(Color.ORANGE);
 		three.setFont(btnFont);
-		three.setBounds(350, 175, 200, 100);
+		three.setBounds(1150, 175, 200, 100);
 		three.addActionListener((e) -> {
 			GameUI.setPanel(new GamePane(new Game(3)));
 		});
@@ -65,7 +68,7 @@ public class MenuPane extends JPanel {
 		four.setBackground(Color.DARK_GRAY);
 		four.setForeground(Color.ORANGE);
 		four.setFont(btnFont);
-		four.setBounds(350, 300, 200, 100);
+		four.setBounds(1150, 300, 200, 100);
 		four.addActionListener((e) -> {
 			GameUI.setPanel(new GamePane(new Game(4)));
 		});
@@ -73,7 +76,7 @@ public class MenuPane extends JPanel {
 		online.setBackground(Color.DARK_GRAY);
 		online.setForeground(Color.ORANGE);
 		online.setFont(btnFont);
-		online.setBounds(350, 425, 200, 100);
+		online.setBounds(1150, 425, 200, 100);
 		online.addActionListener((e) -> {
 			try {
 				GameUI.setPanel(new ClientGameUI());
@@ -83,7 +86,7 @@ public class MenuPane extends JPanel {
 		});
 
 		alert = new JPanel();
-		alert.setBounds(250, 200, 400, 200);
+		alert.setBounds(775, 200, 400, 200);
 		alert.setBackground(Color.PINK);
 		alertMsg = new JLabel("ALERT!", SwingConstants.CENTER);
 		alertMsg.setFont(btnFont);
@@ -102,13 +105,18 @@ public class MenuPane extends JPanel {
 		alert.add(ok);
 		alert.setVisible(false);
 
-		add(label, BorderLayout.NORTH);
-		add(center, BorderLayout.CENTER);
+		JLabel snake = new JLabel(new ImageIcon(this.getClass().getResource("/img/snake.png")));
+		snake.setBounds(250, 0, 1000, 600);
+
+		add(bg);
+		bg.add(label, BorderLayout.NORTH);
+		bg.add(center, BorderLayout.CENTER);
 		center.add(alert);
 		center.add(two);
 		center.add(three);
 		center.add(four);
 		center.add(online);
+		center.add(snake);
 	}
 
 	public void alert(String msg) {
