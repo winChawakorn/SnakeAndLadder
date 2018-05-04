@@ -1,6 +1,7 @@
 package multiplayer;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -35,6 +36,7 @@ public class ClientGameUI extends GamePane {
 		if (mainMenu.getActionListeners().length > 0)
 			mainMenu.removeActionListener(mainMenu.getActionListeners()[0]);
 		mainMenu.addActionListener((e) -> {
+			playerIndex = -1;
 			GameUI.setPanel(new MenuPane());
 			try {
 				client.closeConnection();
@@ -54,15 +56,19 @@ public class ClientGameUI extends GamePane {
 		multiplayerStatus.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 40));
 		start = new JButton("Start");
 		start.addActionListener((e) -> {
-			game = new Game(Integer.parseInt(multiplayerStatus.getText().charAt(0) + ""));
+			int numPlayer = Integer.parseInt(multiplayerStatus.getText().charAt(0) + "");
+			if (numPlayer > 4)
+				numPlayer = 4;
+			game = new Game(numPlayer);
 			try {
 				client.sendToServer(game);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		});
-		start.setBackground(Color.LIGHT_GRAY);
-		start.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 30));
+		start.setBackground(Color.YELLOW);
+		start.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 26));
+		start.setPreferredSize(new Dimension(150, 70));
 		multiplayerMenu.add(multiplayerStatus, new GridBagConstraints());
 		multiplayerMenu.add(start, new GridBagConstraints());
 		add(multiplayerMenu);
@@ -74,16 +80,8 @@ public class ClientGameUI extends GamePane {
 	protected void addRollListener() {
 		roll.addActionListener((e) -> {
 			roll.setEnabled(false);
-			fromNumber = game.currentPlayerPosition();
-			face = game.currentPlayerRollDice();
-			// if find backward square
-			if (game.currentPlayerSquare() instanceof BackwardSquare)
-				face = (-1) * face;
-			// game move piece to final square
-			if (fromNumber + face <= 100)
-				game.currentPlayeMovePiece(face);
-			else
-				game.currentPlayeMovePiece((100 - (fromNumber + face) % 100) - fromNumber);
+			// fromNumber = game.currentPlayerPosition();
+
 			try {
 				client.sendToServer(game);
 			} catch (IOException e1) {
@@ -96,16 +94,20 @@ public class ClientGameUI extends GamePane {
 	protected void backward() {
 		super.backward();
 		roll.setEnabled(false);
-		if (game.currentPlayerIndex() == playerIndex)
+		if (game.currentPlayerIndex() == playerIndex) {
 			roll.setEnabled(true);
+			roll.doClick();
+		}
 	}
 
 	@Override
 	protected void switchPlayer() {
 		game.switchPlayer();
 		freeze();
-		if (game.currentPlayerIndex() == playerIndex)
+		if (game.currentPlayerIndex() == playerIndex) {
 			roll.setEnabled(true);
+			roll.doClick();
+		}
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
 	}
@@ -129,7 +131,6 @@ public class ClientGameUI extends GamePane {
 			if (o instanceof Integer) {
 				if ((int) o < num && playerIndex > 0) {
 					playerIndex--;
-					return;
 				}
 				num = (int) o;
 				if (playerIndex == -1)
@@ -139,8 +140,9 @@ public class ClientGameUI extends GamePane {
 					start.setVisible(false);
 				else
 					start.setVisible(true);
-				if (game.currentPlayerIndex() == playerIndex)
+				if (game.currentPlayerIndex() == playerIndex) {
 					roll.setEnabled(true);
+				}
 				repaint();
 				revalidate();
 			}
@@ -167,6 +169,11 @@ public class ClientGameUI extends GamePane {
 					roll.setEnabled(false);
 				dice.setText(Math.abs(game.currentPlayerPosition() - game.previousPlayerPosition()) + "");
 				currentStatus.setForeground(game.currentPlayer().getColor());
+				if (game.currentPlayerPosition() != game.previousPlayerPosition())
+					currentStatus.setText(game.currentPlayerName() + " go from number " + game.previousPlayerPosition()
+							+ " to number " + game.currentPlayerPosition());
+				System.out.println(game.currentPlayerName() + " go from number " + game.previousPlayerPosition()
+						+ " to number " + game.currentPlayerPosition());
 				if (game.currentPlayerPosition() == 0)
 					return;
 				move(game.currentPlayerIndex(), game.currentPlayerPosition(), game.previousPlayerPosition());
