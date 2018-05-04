@@ -8,6 +8,7 @@ import java.util.Scanner;
 import com.lloseng.ocsf.server.AbstractServer;
 import com.lloseng.ocsf.server.ConnectionToClient;
 
+import game.BackwardSquare;
 import game.Game;
 
 public class GameServer extends AbstractServer {
@@ -38,13 +39,30 @@ public class GameServer extends AbstractServer {
 	protected void handleMessageFromClient(Object o, ConnectionToClient client) {
 		if (o instanceof Game) {
 			game = (Game) o;
-			if (game.getNumPlayer() < 2 || game.getNumPlayer() > 4)
+			System.out.println("Recieve game " + game.currentPlayerName() + " at " + game.currentPlayerPosition()
+					+ " from " + game.previousPlayerPosition());
+			if (game.getNumPlayer() < 2 || game.getNumPlayer() > 4) {
+				end();
 				return;
+			}
 			if (!isStart)
 				game = new Game(game.getNumPlayer());
 			start();
 			if (game.currentPlayerWins() || game.isEnd())
 				end();
+			else {
+				int face = game.currentPlayerRollDice();
+				System.out.println("face = " + face);
+				// if find backward square
+				if (game.currentPlayerSquare() instanceof BackwardSquare)
+					face = (-1) * face;
+				// game move piece to final square
+				if (game.currentPlayerPosition() + face <= 100)
+					game.currentPlayeMovePiece(face);
+				else
+					game.currentPlayeMovePiece(
+							(100 - (game.currentPlayerPosition() + face) % 100) - game.currentPlayerPosition());
+			}
 			sendToAllClients(game);
 		}
 	}

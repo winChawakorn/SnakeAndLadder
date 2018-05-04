@@ -136,9 +136,9 @@ public class GamePane extends JPanel {
 		JPanel rollPane = new JPanel();
 		rollPane.setPreferredSize(new Dimension(300, 80));
 		rollPane.setBackground(new Color(0, 0, 0, 0));
-		roll = new JButton("Roll");
-		roll.setFont(font);
-		roll.setBackground(Color.LIGHT_GRAY);
+		roll = new JButton(new ImageIcon(this.getClass().getResource("/img/roll.png")));
+		roll.setBackground(new Color(0, 0, 0, 0));
+		roll.setPreferredSize(new Dimension(130, 60));
 		addRollListener();
 
 		controller.add(label);
@@ -311,7 +311,7 @@ public class GamePane extends JPanel {
 
 		if (!whoskip.equals("")) {
 			currentStatus.setForeground(game.currentPlayer().getColor());
-			currentStatus.setText(whoskip + " is/are skipped. Now turn is " + game.currentPlayerName() + " turn.");
+			currentStatus.setText(whoskip + " is/are skipped. This is " + game.currentPlayerName() + "'s turn.");
 		}
 	}
 
