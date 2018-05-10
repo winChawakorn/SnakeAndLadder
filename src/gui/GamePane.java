@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -23,7 +25,7 @@ import game.Game;
 import game.SpecialSquare;
 import game.Square;
 
-public class GamePane extends JPanel {
+public class GamePane extends JPanel{
 	protected Game game;
 	protected JTextArea currentStatus;
 	protected Map<Integer, JLabel> players;
@@ -43,7 +45,7 @@ public class GamePane extends JPanel {
 		this.game = game;
 		players = new HashMap<>();
 		init();
-		// game.addObserver(this);
+//		game.addObserver(this);
 		// roll.doClick();
 	}
 
@@ -274,7 +276,10 @@ public class GamePane extends JPanel {
 	protected void backward() {
 		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 		currentStatus.setText(bs.toString());
-		roll.setEnabled(true);
+		if(game.replayMode())
+			roll.doClick();
+		else
+			roll.setEnabled(true);
 		// roll.doClick();
 		// wait for roll again
 	}
@@ -285,7 +290,10 @@ public class GamePane extends JPanel {
 	protected void switchPlayer() {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
-		roll.setEnabled(true);
+		if(game.replayMode())
+			roll.doClick();
+		else
+			roll.setEnabled(true);
 		// roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
@@ -315,8 +323,9 @@ public class GamePane extends JPanel {
 		}
 	}
 
-	// @Override
-	// public void update(Observable o, Object arg) {
-	// // TODO Auto-generated method stub
-	// }
+//	@Override
+//	public void update(Observable o, Object arg) {
+//		roll.doClick();
+//		
+//	}
 }

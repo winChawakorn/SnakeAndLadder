@@ -17,7 +17,7 @@ public class Game extends Observable implements Serializable {
 	private int numPlayer;
 	private boolean replayMode;
 	private Thread thread;
-	private List<Integer> faceHistorys;
+	private List<Command> faceHistorys;
 	private int tick;
 
 	public Game(int numPlayer) {
@@ -38,6 +38,17 @@ public class Game extends Observable implements Serializable {
 	public void turnOnReplayMode() {
 		replayMode = true;
 		tick = 0;
+		
+		ended = false;
+//		while (!ended) {
+//			setChanged();
+//			notifyObservers();
+//		}
+		
+	}
+	
+	public boolean replayMode() {
+		return replayMode;
 	}
 
 	public int getNumPlayer() {
@@ -54,7 +65,6 @@ public class Game extends Observable implements Serializable {
 
 	public void end() {
 		ended = true;
-		tick = 0;
 	}
 
 	public Player currentPlayer() {
@@ -83,10 +93,10 @@ public class Game extends Observable implements Serializable {
 
 	public int currentPlayerRollDice() {
 		if (replayMode) {
-			return faceHistorys.get(tick++);
+			return faceHistorys.get(tick++).getFace();
 		}
 		int face = currentPlayer().roll(die);
-		faceHistorys.add(face);
+		faceHistorys.add(new CollectFaceCommand(face, currentPlayer()));
 		return face;
 	}
 
@@ -110,4 +120,6 @@ public class Game extends Observable implements Serializable {
 	public int getBoardGoalNumber() {
 		return board.getGoalNumber();
 	}
+	
+	
 }
