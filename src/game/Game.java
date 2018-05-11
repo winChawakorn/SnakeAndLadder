@@ -41,6 +41,7 @@ public class Game extends Observable implements Serializable {
 		for (int i = 0; i < numPlayer; i++) {
 			board.movePiece(players[i].getPiece(), (-1) * board.getPiecePosition(players[i].getPiece()));
 		}
+		currentPlayerIndex = 0;
 	}
 	
 	public Thread getThread() {
