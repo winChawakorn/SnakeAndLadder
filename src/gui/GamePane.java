@@ -163,6 +163,7 @@ public class GamePane extends JPanel implements Observer {
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
+			face = 100;
 			dice.setText(face + "");
 			// if find backward square
 			if (game.currentPlayerSquare() instanceof BackwardSquare)
@@ -178,10 +179,6 @@ public class GamePane extends JPanel implements Observer {
 			currentStatus.setText(game.currentPlayerName() + " go from number " + fromNumber + " to number "
 					+ game.currentPlayerPosition());
 			move(game.currentPlayerIndex(), fromNumber + face, fromNumber);
-			// win or not
-			if (game.currentPlayerWins()) {
-				end();
-			}
 			repaint();
 			revalidate();
 		});
@@ -268,8 +265,10 @@ public class GamePane extends JPanel implements Observer {
 					} else {
 						if (cs instanceof FreezeSquare)
 							currentStatus.setText(cs.toString());
-						if (!game.isEnd())
+						if (!game.currentPlayerWins())
 							switchPlayer();
+						else
+							end();
 					}
 				}
 			}
@@ -283,7 +282,7 @@ public class GamePane extends JPanel implements Observer {
 		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 		currentStatus.setText(bs.toString());
 		roll.setEnabled(true);
-		// roll.doClick();
+		roll.doClick();
 		// wait for roll again
 	}
 
@@ -294,15 +293,15 @@ public class GamePane extends JPanel implements Observer {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
 		roll.setEnabled(true);
-		// roll.doClick();
+		roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
 	}
 
 	/**
-	 * checking next players (more than one player because there is a case that
-	 * more than one player are concurrent frozen) are frozen or not. If player
-	 * is frozen skipped his turn.
+	 * checking next players (more than one player because there is a case that more
+	 * than one player are concurrent frozen) are frozen or not. If player is frozen
+	 * skipped his turn.
 	 */
 	protected void freeze() {
 		String whoskip = "";
@@ -325,13 +324,13 @@ public class GamePane extends JPanel implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if(arg instanceof Command){
+		if (arg instanceof Command) {
 			Command c = (Command) arg;
-			dice.setText((int)Math.abs(c.getFace()) + "");
+			dice.setText((int) Math.abs(c.getFace()) + "");
 			int fromNumber = c.getPosBeforeMove();
 			currentStatus.setForeground(c.getPlayer().getColor());
 			currentStatus.setText(c.getPlayer().getName() + " go from number " + fromNumber + " to number ");
-			move(c.getPlayerIndex(), fromNumber + c.getFace() , fromNumber);
+			move(c.getPlayerIndex(), fromNumber + c.getFace(), fromNumber);
 		}
 	}
 }
