@@ -35,7 +35,19 @@ public class Game extends Observable implements Serializable {
 		}
 	}
 
+	public void resetGame() {
+		ended = false;
+		for (int i = 0; i < numPlayer; i++) {
+			board.movePiece(players[i].getPiece(), (-1) * board.getPiecePosition(players[i].getPiece()));
+		}
+	}
+	
+	public Thread getThread() {
+		return thread;
+	}
+	
 	public void turnOnReplayMode() {
+		resetGame();
 		thread = new Thread() {
 			@Override
 			public void run() {
@@ -46,11 +58,23 @@ public class Game extends Observable implements Serializable {
 							+ command.getPosBeforeMove());
 					setChanged();
 					notifyObservers(command);
-					waitFor(410 * (int)Math.abs(command.getFace()) + 700);
-					if(i== faceHistorys.size()-1)
+//					waitFor(410 * (int)Math.abs(command.getFace()) + 700);
+//					waitFor(20000);
+					try {
+						threadCondWait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+					if(i == faceHistorys.size()-1)
 						replayMode = false;
 				}
 			}
+			
+			public synchronized void threadCondWait() throws InterruptedException{
+		           wait();//Comminucate with notify()
+		        
+		     }
 		};
 		if (!replayMode) {
 			replayMode = true;
@@ -76,10 +100,6 @@ public class Game extends Observable implements Serializable {
 
 	public void end() {
 		ended = true;
-		for (Command command : faceHistorys) {
-			System.out.println(
-					command.getFace() + "-" + command.getPlayer().getName() + "-" + command.getPosBeforeMove());
-		}
 	}
 
 	public Player currentPlayer() {

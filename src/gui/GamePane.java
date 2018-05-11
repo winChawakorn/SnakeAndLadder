@@ -130,6 +130,7 @@ public class GamePane extends JPanel implements Observer {
 				purple.setBounds(200, 645, 47, 61);
 			}
 			game.turnOnReplayMode();
+			replay.setVisible(false);
 		});
 
 		mainMenu = new JButton("Main menu");
@@ -218,6 +219,7 @@ public class GamePane extends JPanel implements Observer {
 		}
 		Timer timer = new Timer(10, null);
 		timer.addActionListener((e) -> {
+			
 			int next = fromNumber + 1;
 			if (fromNumber == -1)
 				next = toNumber;
@@ -257,6 +259,7 @@ public class GamePane extends JPanel implements Observer {
 				if (next != toNumber) // don't reach destination yet
 					move(playerIndex, toNumber, next);
 				else { // reach destination
+//					System.out.println(game.currentPlayerName() + "|"+game.currentPlayerPosition());
 					Square cs = game.currentPlayerSquare();
 					if (cs instanceof SpecialSquare) {
 						SpecialSquare ss = (SpecialSquare) cs;
@@ -275,6 +278,7 @@ public class GamePane extends JPanel implements Observer {
 			}
 			repaint();
 			revalidate();
+			
 		});
 		timer.start();
 	}
@@ -283,7 +287,14 @@ public class GamePane extends JPanel implements Observer {
 		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 		currentStatus.setText(bs.toString());
 		roll.setEnabled(true);
-		// roll.doClick();
+		if(!game.isReplay())
+			roll.doClick();
+		
+		if(game.isReplay()) {
+			synchronized (game.getThread()) {
+				game.getThread().notify();
+			}
+		}
 		// wait for roll again
 	}
 
@@ -294,9 +305,16 @@ public class GamePane extends JPanel implements Observer {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
 		roll.setEnabled(true);
-		// roll.doClick();
+		if(!game.isReplay())
+			roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
+		
+		if(game.isReplay()) {
+			synchronized (game.getThread()) {
+				game.getThread().notify();
+			}
+		}
 	}
 
 	/**
