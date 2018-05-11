@@ -164,7 +164,6 @@ public class GamePane extends JPanel implements Observer {
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
-			face = 100;
 			dice.setText(face + "");
 			// if find backward square
 			if (game.currentPlayerSquare() instanceof BackwardSquare)
@@ -175,8 +174,7 @@ public class GamePane extends JPanel implements Observer {
 				game.currentPlayeMovePiece(face);
 			else
 				game.currentPlayeMovePiece((100 - (fromNumber + face) % 100) - fromNumber);
-			// System.out.println(game.currentPlayerName() + ",face:" + face +
-			// ",cpos:" + game.currentPlayerPosition());
+
 			currentStatus.setText(game.currentPlayerName() + " go from number " + fromNumber + " to number "
 					+ game.currentPlayerPosition());
 			move(game.currentPlayerIndex(), fromNumber + face, fromNumber);
@@ -192,6 +190,7 @@ public class GamePane extends JPanel implements Observer {
 		controller.add(playAgain);
 		controller.add(replay);
 		controller.add(mainMenu);
+		replay.setVisible(true);
 		turn.setText(game.currentPlayerName() + " WINS!");
 		game.end();
 	}
@@ -216,7 +215,7 @@ public class GamePane extends JPanel implements Observer {
 		}
 		Timer timer = new Timer(10, null);
 		timer.addActionListener((e) -> {
-			
+
 			int next = fromNumber + 1;
 			if (fromNumber == -1)
 				next = toNumber;
@@ -256,7 +255,7 @@ public class GamePane extends JPanel implements Observer {
 				if (next != toNumber) // don't reach destination yet
 					move(playerIndex, toNumber, next);
 				else { // reach destination
-//					System.out.println(game.currentPlayerName() + "|"+game.currentPlayerPosition());
+					System.out.println(game.currentPlayerName() + "|" + game.currentPlayerPosition());
 					Square cs = game.currentPlayerSquare();
 					if (cs instanceof SpecialSquare) {
 						SpecialSquare ss = (SpecialSquare) cs;
@@ -277,7 +276,7 @@ public class GamePane extends JPanel implements Observer {
 			}
 			repaint();
 			revalidate();
-			
+
 		});
 		timer.start();
 	}
@@ -286,11 +285,11 @@ public class GamePane extends JPanel implements Observer {
 		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 		currentStatus.setText(bs.toString());
 		roll.setEnabled(true);
-		
-		if(!game.isReplay())
+
+		if (!game.isReplay())
 			roll.doClick();
-		
-		if(game.isReplay()) {
+
+		if (game.isReplay()) {
 			synchronized (game.getThread()) {
 				game.getThread().notify();
 			}
@@ -305,12 +304,12 @@ public class GamePane extends JPanel implements Observer {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
 		roll.setEnabled(true);
-		if(!game.isReplay())
+		if (!game.isReplay())
 			roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
-		
-		if(game.isReplay()) {
+
+		if (game.isReplay()) {
 			synchronized (game.getThread()) {
 				game.getThread().notify();
 			}
@@ -318,9 +317,9 @@ public class GamePane extends JPanel implements Observer {
 	}
 
 	/**
-	 * checking next players (more than one player because there is a case that more
-	 * than one player are concurrent frozen) are frozen or not. If player is frozen
-	 * skipped his turn.
+	 * checking next players (more than one player because there is a case that
+	 * more than one player are concurrent frozen) are frozen or not. If player
+	 * is frozen skipped his turn.
 	 */
 	protected void freeze() {
 		String whoskip = "";
@@ -348,7 +347,8 @@ public class GamePane extends JPanel implements Observer {
 			dice.setText((int) Math.abs(c.getFace()) + "");
 			int fromNumber = c.getPosBeforeMove();
 			currentStatus.setForeground(c.getPlayer().getColor());
-			currentStatus.setText(c.getPlayer().getName() + " go from number " + fromNumber + " to number ");
+			currentStatus.setText(c.getPlayer().getName() + " go from number " + fromNumber + " to number "
+					+ game.currentPlayerPosition());
 			move(c.getPlayerIndex(), fromNumber + c.getFace(), fromNumber);
 		}
 	}

@@ -8,7 +8,10 @@ public class CollectFaceCommand extends Command{
 
 	@Override
 	public void execute(Board board) {
-		getPlayer().movePiece(board, getFace());
+		if(getPosBeforeMove() + getFace() <= 100)
+			getPlayer().movePiece(board, getFace());
+		else
+			getPlayer().movePiece(board, (100 - (getPosBeforeMove() + getFace()) % 100) - getPosBeforeMove());
 		
 	}
 

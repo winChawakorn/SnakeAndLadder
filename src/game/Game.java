@@ -18,6 +18,7 @@ public class Game extends Observable implements Serializable {
 	private List<Command> faceHistorys;
 	private Thread thread;
 	private boolean replayMode;
+	private int i = 0;
 
 	public Game(int numPlayer) {
 		this.numPlayer = numPlayer;
@@ -27,8 +28,8 @@ public class Game extends Observable implements Serializable {
 		die = new Die();
 		ended = false;
 		replayMode = false;
-		Color[] colorlist = { Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW };
-		String[] nameList = { "RED", "BLUE", "GREEN", "YELLOW" };
+		Color[] colorlist = { Color.RED, Color.BLUE, new Color(39, 124, 22), new Color(93, 2, 142) };
+		String[] nameList = { "RED", "BLUE", "GREEN", "PURPLE" };
 		for (int i = 0; i < numPlayer; i++) {
 			players[i] = new Player(nameList[i], colorlist[i]);
 			board.addPiece(players[i].getPiece(), 0);
@@ -58,16 +59,17 @@ public class Game extends Observable implements Serializable {
 							+ command.getPosBeforeMove());
 					setChanged();
 					notifyObservers(command);
-//					waitFor(410 * (int)Math.abs(command.getFace()) + 700);
-//					waitFor(20000);
+					
+					if(i == faceHistorys.size()-1)
+						replayMode = false;
+					
 					try {
 						threadCondWait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 					
-					if(i == faceHistorys.size()-1)
-						replayMode = false;
+					
 				}
 			}
 			
@@ -100,6 +102,7 @@ public class Game extends Observable implements Serializable {
 
 	public void end() {
 		ended = true;
+		System.out.println(i+" "+ faceHistorys.size());
 	}
 
 	public Player currentPlayer() {
@@ -128,6 +131,7 @@ public class Game extends Observable implements Serializable {
 
 	public int currentPlayerRollDice() {
 		int face = currentPlayer().roll(die);
+		i++;
 		return face;
 	}
 
