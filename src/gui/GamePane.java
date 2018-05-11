@@ -20,12 +20,13 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import game.BackwardSquare;
+import game.Command;
 import game.FreezeSquare;
 import game.Game;
 import game.SpecialSquare;
 import game.Square;
 
-public class GamePane extends JPanel{
+public class GamePane extends JPanel implements Observer {
 	protected Game game;
 	protected JTextArea currentStatus;
 	protected Map<Integer, JLabel> players;
@@ -45,7 +46,7 @@ public class GamePane extends JPanel{
 		this.game = game;
 		players = new HashMap<>();
 		init();
-//		game.addObserver(this);
+		game.addObserver(this);
 		// roll.doClick();
 	}
 
@@ -122,10 +123,13 @@ public class GamePane extends JPanel{
 		replay.setFont(font);
 		replay.setBackground(Color.WHITE);
 		replay.addActionListener((e) -> {
+			if (!game.isReplay()) {
+				red.setBounds(50, 645, 47, 61);
+				blue.setBounds(100, 645, 47, 61);
+				green.setBounds(150, 645, 47, 61);
+				purple.setBounds(200, 645, 47, 61);
+			}
 			game.turnOnReplayMode();
-			// while (!game.isEnd()) {
-			// roll.doClick();
-			// }
 		});
 
 		mainMenu = new JButton("Main menu");
@@ -163,12 +167,14 @@ public class GamePane extends JPanel{
 			// if find backward square
 			if (game.currentPlayerSquare() instanceof BackwardSquare)
 				face = (-1) * face;
+			game.updateHistory(face);
 			// game move piece to final square
 			if (fromNumber + face <= 100)
 				game.currentPlayeMovePiece(face);
 			else
 				game.currentPlayeMovePiece((100 - (fromNumber + face) % 100) - fromNumber);
-			System.out.println(game.currentPlayerName() + ",face:" + face + ",cpos:" + game.currentPlayerPosition());
+			// System.out.println(game.currentPlayerName() + ",face:" + face +
+			// ",cpos:" + game.currentPlayerPosition());
 			currentStatus.setText(game.currentPlayerName() + " go from number " + fromNumber + " to number "
 					+ game.currentPlayerPosition());
 			move(game.currentPlayerIndex(), fromNumber + face, fromNumber);
@@ -244,7 +250,7 @@ public class GamePane extends JPanel{
 			// when piece already one square
 			if (xIsDone && yIsDone) {
 				try {
-					Thread.sleep(200);
+					Thread.sleep(200); // 10 millisec per 5 pixels
 				} catch (InterruptedException e1) {
 				}
 				timer.stop();
@@ -257,7 +263,7 @@ public class GamePane extends JPanel{
 						move(playerIndex, ss.getDestination(), -1);
 						currentStatus.setText(cs.toString());
 						game.currentPlayeMovePiece(ss.getDestination() - ss.getNumber());
-					} else if (game.currentPlayerSquare() instanceof BackwardSquare) {
+					} else if (cs instanceof BackwardSquare) {
 						backward();
 					} else {
 						if (cs instanceof FreezeSquare)
@@ -276,10 +282,7 @@ public class GamePane extends JPanel{
 	protected void backward() {
 		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 		currentStatus.setText(bs.toString());
-		if(game.replayMode())
-			roll.doClick();
-		else
-			roll.setEnabled(true);
+		roll.setEnabled(true);
 		// roll.doClick();
 		// wait for roll again
 	}
@@ -290,19 +293,16 @@ public class GamePane extends JPanel{
 	protected void switchPlayer() {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
-		if(game.replayMode())
-			roll.doClick();
-		else
-			roll.setEnabled(true);
+		roll.setEnabled(true);
 		// roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
 	}
 
 	/**
-	 * checking next players (more than one player because there is a case that more
-	 * than one player are concurrent frozen) are frozen or not. If player is frozen
-	 * skipped his turn.
+	 * checking next players (more than one player because there is a case that
+	 * more than one player are concurrent frozen) are frozen or not. If player
+	 * is frozen skipped his turn.
 	 */
 	protected void freeze() {
 		String whoskip = "";
@@ -323,9 +323,15 @@ public class GamePane extends JPanel{
 		}
 	}
 
-//	@Override
-//	public void update(Observable o, Object arg) {
-//		roll.doClick();
-//		
-//	}
+	@Override
+	public void update(Observable o, Object arg) {
+		if(arg instanceof Command){
+			Command c = (Command) arg;
+			dice.setText((int)Math.abs(c.getFace()) + "");
+			int fromNumber = c.getPosBeforeMove();
+			currentStatus.setForeground(c.getPlayer().getColor());
+			currentStatus.setText(c.getPlayer().getName() + " go from number " + fromNumber + " to number ");
+			move(c.getPlayerIndex(), fromNumber + c.getFace() , fromNumber);
+		}
+	}
 }

@@ -15,10 +15,9 @@ public class Game extends Observable implements Serializable {
 	private int previousPlayerPosition;
 	private boolean ended;
 	private int numPlayer;
-	private boolean replayMode;
-	private Thread thread;
 	private List<Command> faceHistorys;
-	private int tick;
+	private Thread thread;
+	private boolean replayMode;
 
 	public Game(int numPlayer) {
 		this.numPlayer = numPlayer;
@@ -27,8 +26,9 @@ public class Game extends Observable implements Serializable {
 		board = new Board();
 		die = new Die();
 		ended = false;
-		Color [] colorlist = {Color.RED,Color.BLUE,Color.GREEN,Color.YELLOW};
-		String[] nameList = {"RED","BLUE","GREEN","YELLOW"};
+		replayMode = false;
+		Color[] colorlist = { Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW };
+		String[] nameList = { "RED", "BLUE", "GREEN", "YELLOW" };
 		for (int i = 0; i < numPlayer; i++) {
 			players[i] = new Player(nameList[i], colorlist[i]);
 			board.addPiece(players[i].getPiece(), 0);
@@ -36,18 +36,29 @@ public class Game extends Observable implements Serializable {
 	}
 
 	public void turnOnReplayMode() {
-		replayMode = true;
-		tick = 0;
-		
-		ended = false;
-//		while (!ended) {
-//			setChanged();
-//			notifyObservers();
-//		}
-		
+		thread = new Thread() {
+			@Override
+			public void run() {
+				for (int i = 0; i< faceHistorys.size() ; i++) {
+					Command command = faceHistorys.get(i);
+					command.execute(board);
+					System.out.println((i+1) + ": " + command.getFace() + "-" + command.getPlayer().getName() + "-"
+							+ command.getPosBeforeMove());
+					setChanged();
+					notifyObservers(command);
+					waitFor(410 * (int)Math.abs(command.getFace()) + 700);
+					if(i== faceHistorys.size()-1)
+						replayMode = false;
+				}
+			}
+		};
+		if (!replayMode) {
+			replayMode = true;
+			thread.start();
+		}
 	}
 	
-	public boolean replayMode() {
+	public boolean isReplay(){
 		return replayMode;
 	}
 
@@ -65,6 +76,10 @@ public class Game extends Observable implements Serializable {
 
 	public void end() {
 		ended = true;
+		for (Command command : faceHistorys) {
+			System.out.println(
+					command.getFace() + "-" + command.getPlayer().getName() + "-" + command.getPosBeforeMove());
+		}
 	}
 
 	public Player currentPlayer() {
@@ -92,12 +107,13 @@ public class Game extends Observable implements Serializable {
 	}
 
 	public int currentPlayerRollDice() {
-		if (replayMode) {
-			return faceHistorys.get(tick++).getFace();
-		}
 		int face = currentPlayer().roll(die);
-		faceHistorys.add(new CollectFaceCommand(face, currentPlayer()));
 		return face;
+	}
+
+	public void updateHistory(int face) {
+		Command c = new CollectFaceCommand(face, currentPlayerIndex, currentPlayerPosition(), currentPlayer());
+		faceHistorys.add(c);
 	}
 
 	public void currentPlayeMovePiece(int steps) {
@@ -120,6 +136,13 @@ public class Game extends Observable implements Serializable {
 	public int getBoardGoalNumber() {
 		return board.getGoalNumber();
 	}
-	
-	
+
+	private void waitFor(long delayed) {
+		try {
+			Thread.sleep(delayed);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
