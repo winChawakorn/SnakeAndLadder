@@ -96,7 +96,7 @@ public class ClientGameUI extends GamePane {
 		roll.setEnabled(false);
 		if (game.currentPlayerIndex() == playerIndex) {
 			roll.setEnabled(true);
-//			roll.doClick();
+			roll.doClick();
 		}
 	}
 
@@ -106,7 +106,7 @@ public class ClientGameUI extends GamePane {
 		freeze();
 		if (game.currentPlayerIndex() == playerIndex) {
 			roll.setEnabled(true);
-//			roll.doClick();
+			roll.doClick();
 		}
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
