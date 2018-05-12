@@ -1,6 +1,6 @@
 # Snakes and Ladders game in JAVA
 ### Author
-**Chawakorn Suphepre(@winChawakorn) and Vittunyuta Maeprasart(@aommoaGitHub)**
+**Chawakorn Suphepre(@winChawakorn), Vittunyuta Maeprasart(@aommoaGitHub) and Jiranan Patrathamakul(@jiranan-pat)**
 
 ## *** GAME VERSION HAS RELEASED.  2018/05/18 ***
 <a href="https://github.com/winChawakorn/TypingThrower/raw/master/TypingThrower.jar"> >>>Download this Game</a> Run `SnakeAndLadder.jar`</br></br>
