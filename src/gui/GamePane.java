@@ -265,7 +265,8 @@ public class GamePane extends JPanel implements Observer {
 				if (next != toNumber) // don't reach destination yet
 					move(playerIndex, toNumber, next);
 				else { // reach destination
-					System.out.println(game.currentPlayerName() + "|" + game.currentPlayerPosition());
+						// System.out.println(game.currentPlayerName() + "|" +
+						// game.currentPlayerPosition());
 					Square cs = game.currentPlayerSquare();
 					if (cs instanceof SpecialSquare) {
 						SpecialSquare ss = (SpecialSquare) cs;

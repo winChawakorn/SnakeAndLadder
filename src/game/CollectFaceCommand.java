@@ -1,8 +1,6 @@
 package game;
 
-import java.io.Serializable;
-
-public class CollectFaceCommand extends Command implements Serializable {
+public class CollectFaceCommand extends Command {
 
 	public CollectFaceCommand(int face, int playerIndex, int posBeforeMove, Player player) {
 		super(face, playerIndex, posBeforeMove, player);

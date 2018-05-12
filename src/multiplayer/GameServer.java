@@ -57,17 +57,18 @@ public class GameServer extends AbstractServer {
 				// if find backward square
 				if (game.currentPlayerSquare() instanceof BackwardSquare)
 					face = (-1) * face;
+				game.updateHistory(face);
 				// game move piece to final square
 				if (game.currentPlayerPosition() + face <= 100)
 					game.currentPlayeMovePiece(face);
 				else
 					game.currentPlayeMovePiece(
 							(100 - (game.currentPlayerPosition() + face) % 100) - game.currentPlayerPosition());
-				if (game.currentPlayerWins()) {
-					System.out.println("EEEEENNNNNDDDDD");
-					game.end();
-					// end();
-				}
+				// if (game.currentPlayerWins()) {
+				// System.out.println("EEEEENNNNNDDDDD");
+				// game.end();
+				// // end();
+				// }
 			}
 			System.out.println(game.isEnd() + " 3545341as53d15as31das65d4");
 			sendToAllClients(game);
