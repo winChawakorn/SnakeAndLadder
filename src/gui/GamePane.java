@@ -285,9 +285,9 @@ public class GamePane extends JPanel implements Observer {
 		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 		currentStatus.setText(bs.toString());
 		roll.setEnabled(true);
-
-		if (!game.isReplay())
-			roll.doClick();
+//
+//		if (!game.isReplay())
+//			roll.doClick();
 
 		if (game.isReplay()) {
 			synchronized (game.getThread()) {
@@ -304,8 +304,8 @@ public class GamePane extends JPanel implements Observer {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
 		roll.setEnabled(true);
-		if (!game.isReplay())
-			roll.doClick();
+//		if (!game.isReplay())
+//			roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
 
