@@ -163,7 +163,6 @@ public class GamePane extends JPanel implements Observer {
 			roll.setEnabled(false);
 			fromNumber = game.currentPlayerPosition();
 			face = game.currentPlayerRollDice();
-			face = 100;
 			dice.setText(face + "");
 			// if find backward square
 			if (game.currentPlayerSquare() instanceof BackwardSquare)
