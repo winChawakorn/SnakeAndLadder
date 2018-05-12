@@ -18,7 +18,7 @@ public class Game extends Observable implements Serializable {
 	private List<Command> faceHistorys;
 	private Thread thread;
 	private boolean replayMode;
-	private int i = 0;
+//	private int i = 0;
 
 	public Game(int numPlayer) {
 		this.numPlayer = numPlayer;
@@ -103,7 +103,7 @@ public class Game extends Observable implements Serializable {
 
 	public void end() {
 		ended = true;
-		System.out.println(i+" "+ faceHistorys.size());
+//		System.out.println(i+" "+ faceHistorys.size());
 	}
 
 	public Player currentPlayer() {
@@ -132,7 +132,7 @@ public class Game extends Observable implements Serializable {
 
 	public int currentPlayerRollDice() {
 		int face = currentPlayer().roll(die);
-		i++;
+//		i++;
 		return face;
 	}
 
