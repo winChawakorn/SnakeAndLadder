@@ -22,9 +22,12 @@
 * 2 players
 * 3 players
 * 4 players
-* online - play with another person, to play this mode you have to run `GameServer.java` first.<br>
+* online - play with another person, to play this mode on of you have to run `GameServer.java` first.<br>
 
 ![Menu Pane](http://i.imgur.com/YAQjAF5.jpg)
 
 2. Roll a dice!! Trying to reach 100 square to WIN!!!<br>
 ![Game Pane](http://i.imgur.com/YAQjAF5.jpg)
+
+3. Then you can replay the game, go back to choose play mode, or play again (only in offline mode)
+![Win Pane](http://i.imgur.com/YAQjAF5.jpg)

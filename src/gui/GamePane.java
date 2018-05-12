@@ -285,7 +285,7 @@ public class GamePane extends JPanel implements Observer {
 		BackwardSquare bs = (BackwardSquare) game.currentPlayerSquare();
 		currentStatus.setText(bs.toString());
 		roll.setEnabled(true);
-//
+
 //		if (!game.isReplay())
 //			roll.doClick();
 
