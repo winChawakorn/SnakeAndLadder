@@ -2,3 +2,4 @@
 .project
 /bin
 /.settings
+/src/game/ConsoleUI.java

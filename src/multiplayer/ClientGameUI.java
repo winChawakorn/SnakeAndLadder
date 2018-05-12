@@ -96,7 +96,7 @@ public class ClientGameUI extends GamePane {
 		roll.setEnabled(false);
 		if (game.currentPlayerIndex() == playerIndex) {
 			roll.setEnabled(true);
-			roll.doClick();
+			// roll.doClick();
 		}
 	}
 
@@ -106,7 +106,7 @@ public class ClientGameUI extends GamePane {
 		freeze();
 		if (game.currentPlayerIndex() == playerIndex) {
 			roll.setEnabled(true);
-			roll.doClick();
+			// roll.doClick();
 		}
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
@@ -116,6 +116,7 @@ public class ClientGameUI extends GamePane {
 	protected void end() {
 		super.end();
 		controller.remove(playAgain);
+		controller.remove(replay);
 	}
 
 	public class Client extends AbstractClient {
@@ -167,16 +168,18 @@ public class ClientGameUI extends GamePane {
 				}
 				if (game.currentPlayerIndex() != playerIndex)
 					roll.setEnabled(false);
-				dice.setText(Math.abs(game.currentPlayerPosition() - game.previousPlayerPosition()) + "");
+				face = game.getHistory().get(game.getHistory().size() - 1).getFace();
+				dice.setText(Math.abs(face) + "");
 				currentStatus.setForeground(game.currentPlayer().getColor());
 				if (game.currentPlayerPosition() != game.previousPlayerPosition())
 					currentStatus.setText(game.currentPlayerName() + " go from number " + game.previousPlayerPosition()
 							+ " to number " + game.currentPlayerPosition());
-				System.out.println(game.currentPlayerName() + " go from number " + game.previousPlayerPosition()
-						+ " to number " + game.currentPlayerPosition());
+				// System.out.println(game.currentPlayerName() + " go from number " +
+				// game.previousPlayerPosition()
+				// + " to number " + game.currentPlayerPosition());
 				if (game.currentPlayerPosition() == 0)
 					return;
-				move(game.currentPlayerIndex(), game.currentPlayerPosition(), game.previousPlayerPosition());
+				move(game.currentPlayerIndex(), game.previousPlayerPosition() + face, game.previousPlayerPosition());
 				if (game.currentPlayerWins()) {
 					playerIndex = 0;
 					end();

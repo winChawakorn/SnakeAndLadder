@@ -36,7 +36,7 @@ public class GamePane extends JPanel implements Observer {
 	protected JLabel controller;
 	protected JButton playAgain;
 	protected JButton mainMenu;
-	private JButton replay;
+	protected JButton replay;
 	protected int face;
 	protected int fromNumber;
 	protected JLabel spectator;
@@ -255,7 +255,8 @@ public class GamePane extends JPanel implements Observer {
 				if (next != toNumber) // don't reach destination yet
 					move(playerIndex, toNumber, next);
 				else { // reach destination
-					System.out.println(game.currentPlayerName() + "|" + game.currentPlayerPosition());
+					// System.out.println(game.currentPlayerName() + "|" +
+					// game.currentPlayerPosition());
 					Square cs = game.currentPlayerSquare();
 					if (cs instanceof SpecialSquare) {
 						SpecialSquare ss = (SpecialSquare) cs;
@@ -286,8 +287,8 @@ public class GamePane extends JPanel implements Observer {
 		currentStatus.setText(bs.toString());
 		roll.setEnabled(true);
 
-		if (!game.isReplay())
-			roll.doClick();
+		// if (!game.isReplay())
+		// roll.doClick();
 
 		if (game.isReplay()) {
 			synchronized (game.getThread()) {
@@ -304,8 +305,8 @@ public class GamePane extends JPanel implements Observer {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
 		roll.setEnabled(true);
-		if (!game.isReplay())
-			roll.doClick();
+		// if (!game.isReplay())
+		// roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
 
@@ -317,9 +318,9 @@ public class GamePane extends JPanel implements Observer {
 	}
 
 	/**
-	 * checking next players (more than one player because there is a case that
-	 * more than one player are concurrent frozen) are frozen or not. If player
-	 * is frozen skipped his turn.
+	 * checking next players (more than one player because there is a case that more
+	 * than one player are concurrent frozen) are frozen or not. If player is frozen
+	 * skipped his turn.
 	 */
 	protected void freeze() {
 		String whoskip = "";

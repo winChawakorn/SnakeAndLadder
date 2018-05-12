@@ -36,6 +36,10 @@ public class Game extends Observable implements Serializable {
 		}
 	}
 
+	public List<Command> getHistory() {
+		return faceHistorys;
+	}
+
 	public void resetGame() {
 		ended = false;
 		for (int i = 0; i < numPlayer; i++) {
@@ -43,49 +47,49 @@ public class Game extends Observable implements Serializable {
 		}
 		currentPlayerIndex = 0;
 	}
-	
+
 	public Thread getThread() {
 		return thread;
 	}
-	
+
 	public void turnOnReplayMode() {
 		resetGame();
 		thread = new Thread() {
 			@Override
 			public void run() {
-				for (int i = 0; i< faceHistorys.size() ; i++) {
+				for (int i = 0; i < faceHistorys.size(); i++) {
 					Command command = faceHistorys.get(i);
 					command.execute(board);
-					System.out.println((i+1) + ": " + command.getFace() + "-" + command.getPlayer().getName() + "-"
-							+ command.getPosBeforeMove());
+					// System.out.println((i + 1) + ": " + command.getFace() + "-" +
+					// command.getPlayer().getName() + "-"
+					// + command.getPosBeforeMove());
 					setChanged();
 					notifyObservers(command);
-					
-					if(i == faceHistorys.size()-1)
+
+					if (i == faceHistorys.size() - 1)
 						replayMode = false;
-					
+
 					try {
 						threadCondWait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					
-					
+
 				}
 			}
-			
-			public synchronized void threadCondWait() throws InterruptedException{
-		           wait();//Comminucate with notify()
-		        
-		     }
+
+			public synchronized void threadCondWait() throws InterruptedException {
+				wait();// Comminucate with notify()
+
+			}
 		};
 		if (!replayMode) {
 			replayMode = true;
 			thread.start();
 		}
 	}
-	
-	public boolean isReplay(){
+
+	public boolean isReplay() {
 		return replayMode;
 	}
 
@@ -103,7 +107,7 @@ public class Game extends Observable implements Serializable {
 
 	public void end() {
 		ended = true;
-		System.out.println(i+" "+ faceHistorys.size());
+		// System.out.println(i + " " + faceHistorys.size());
 	}
 
 	public Player currentPlayer() {
