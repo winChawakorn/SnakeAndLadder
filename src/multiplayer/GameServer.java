@@ -45,14 +45,15 @@ public class GameServer extends AbstractServer {
 				end();
 				return;
 			}
-			if (!isStart)
+			if (!isStart) {
 				game = new Game(game.getNumPlayer());
-			start();
-			if (game.currentPlayerWins() || game.isEnd())
+				start();
+			} else if (game.currentPlayerWins() || game.isEnd())
 				end();
 			else {
 				int face = game.currentPlayerRollDice();
 				System.out.println("face = " + face);
+				game.updateHistory(face);
 				// if find backward square
 				if (game.currentPlayerSquare() instanceof BackwardSquare)
 					face = (-1) * face;
@@ -62,8 +63,16 @@ public class GameServer extends AbstractServer {
 				else
 					game.currentPlayeMovePiece(
 							(100 - (game.currentPlayerPosition() + face) % 100) - game.currentPlayerPosition());
+				if (game.currentPlayerWins()) {
+					System.out.println("EEEEENNNNNDDDDD");
+					game.end();
+					// end();
+				}
 			}
+			System.out.println(game.isEnd() + " 3545341as53d15as31das65d4");
 			sendToAllClients(game);
+			if (game.isEnd())
+				end();
 		}
 	}
 
@@ -76,6 +85,7 @@ public class GameServer extends AbstractServer {
 		connections.add(client);
 		try {
 			if (isStart) {
+				System.out.println("started");
 				client.sendToClient(game);
 			} else {
 				sendToAllClients(connections.size());
@@ -97,11 +107,18 @@ public class GameServer extends AbstractServer {
 				players.remove(client);
 			return;
 		}
-		if (players.contains(client)) {
+		// if (game.isEnd()) {
+		//
+		// }
+		System.out.println(!game.isEnd() + " asdasdasdsd");
+		if (players.contains(client) && !game.isEnd()) {
 			players.remove(client);
-			end();
-			game.end();
+			// game.end();
+			System.out.println(game.isEnd());
+			game.setNumPlayer(-1);
+			System.out.println(game.getNumPlayer());
 			sendToAllClients(game);
+			end();
 		}
 	}
 

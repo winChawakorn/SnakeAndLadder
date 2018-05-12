@@ -36,10 +36,14 @@ public class GamePane extends JPanel implements Observer {
 	protected JLabel controller;
 	protected JButton playAgain;
 	protected JButton mainMenu;
-	private JButton replay;
+	protected JButton replay;
 	protected int face;
 	protected int fromNumber;
 	protected JLabel spectator;
+	protected JLabel red;
+	protected JLabel blue;
+	protected JLabel green;
+	protected JLabel purple;
 
 	public GamePane(Game game) {
 		super();
@@ -53,19 +57,19 @@ public class GamePane extends JPanel implements Observer {
 	protected void init() {
 		setLayout(null);
 
-		JLabel red = new JLabel(new ImageIcon(this.getClass().getResource("/img/red.png")));
+		red = new JLabel(new ImageIcon(this.getClass().getResource("/img/red.png")));
 		red.setBounds(50, 645, 47, 61);
 		players.put(0, red);
 		add(red);
-		JLabel blue = new JLabel(new ImageIcon(this.getClass().getResource("/img/blue.png")));
+		blue = new JLabel(new ImageIcon(this.getClass().getResource("/img/blue.png")));
 		blue.setBounds(100, 645, 47, 61);
 		players.put(1, blue);
 		add(blue);
-		JLabel green = new JLabel(new ImageIcon(this.getClass().getResource("/img/green.png")));
+		green = new JLabel(new ImageIcon(this.getClass().getResource("/img/green.png")));
 		green.setBounds(150, 645, 47, 61);
 		players.put(2, green);
 		add(green);
-		JLabel purple = new JLabel(new ImageIcon(this.getClass().getResource("/img/purple.png")));
+		purple = new JLabel(new ImageIcon(this.getClass().getResource("/img/purple.png")));
 		purple.setBounds(200, 645, 47, 61);
 		players.put(3, purple);
 		add(purple);
@@ -123,14 +127,7 @@ public class GamePane extends JPanel implements Observer {
 		replay.setFont(font);
 		replay.setBackground(Color.WHITE);
 		replay.addActionListener((e) -> {
-			if (!game.isReplay()) {
-				red.setBounds(50, 645, 47, 61);
-				blue.setBounds(100, 645, 47, 61);
-				green.setBounds(150, 645, 47, 61);
-				purple.setBounds(200, 645, 47, 61);
-			}
-			game.turnOnReplayMode();
-			replay.setVisible(false);
+			addReplayListener();
 		});
 
 		mainMenu = new JButton("Main menu");
@@ -156,6 +153,17 @@ public class GamePane extends JPanel implements Observer {
 		controller.add(roll);
 		controller.add(currentStatus);
 		add(controller);
+	}
+
+	protected void addReplayListener() {
+		if (!game.isReplay()) {
+			red.setBounds(50, 645, 47, 61);
+			blue.setBounds(100, 645, 47, 61);
+			green.setBounds(150, 645, 47, 61);
+			purple.setBounds(200, 645, 47, 61);
+		}
+		game.turnOnReplayMode();
+		replay.setVisible(false);
 	}
 
 	protected void addRollListener() {
@@ -215,7 +223,9 @@ public class GamePane extends JPanel implements Observer {
 		}
 		Timer timer = new Timer(10, null);
 		timer.addActionListener((e) -> {
-
+			if (game.isReplay()) {
+				System.out.println("MOVE!!!");
+			}
 			int next = fromNumber + 1;
 			if (fromNumber == -1)
 				next = toNumber;
@@ -286,8 +296,8 @@ public class GamePane extends JPanel implements Observer {
 		currentStatus.setText(bs.toString());
 		roll.setEnabled(true);
 
-		if (!game.isReplay())
-			roll.doClick();
+		// if (!game.isReplay())
+		// roll.doClick();
 
 		if (game.isReplay()) {
 			synchronized (game.getThread()) {
@@ -304,8 +314,8 @@ public class GamePane extends JPanel implements Observer {
 		game.switchPlayer();
 		freeze(); // check this player is on freeze square or not
 		roll.setEnabled(true);
-		if (!game.isReplay())
-			roll.doClick();
+		// if (!game.isReplay())
+		// roll.doClick();
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
 
@@ -317,9 +327,9 @@ public class GamePane extends JPanel implements Observer {
 	}
 
 	/**
-	 * checking next players (more than one player because there is a case that
-	 * more than one player are concurrent frozen) are frozen or not. If player
-	 * is frozen skipped his turn.
+	 * checking next players (more than one player because there is a case that more
+	 * than one player are concurrent frozen) are frozen or not. If player is frozen
+	 * skipped his turn.
 	 */
 	protected void freeze() {
 		String whoskip = "";

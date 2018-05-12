@@ -76,6 +76,16 @@ public class ClientGameUI extends GamePane {
 		roll.setVisible(false);
 	}
 
+	// @Override
+	// protected void addReplayListener() {
+	// super.addReplayListener();
+	// try {
+	// client.closeConnection();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+
 	@Override
 	protected void addRollListener() {
 		roll.addActionListener((e) -> {
@@ -96,26 +106,36 @@ public class ClientGameUI extends GamePane {
 		roll.setEnabled(false);
 		if (game.currentPlayerIndex() == playerIndex) {
 			roll.setEnabled(true);
-			roll.doClick();
+			// roll.doClick();
 		}
 	}
 
 	@Override
 	protected void switchPlayer() {
 		game.switchPlayer();
-		freeze();
+		freeze(); // check this player is on freeze square or not
 		if (game.currentPlayerIndex() == playerIndex) {
 			roll.setEnabled(true);
-			roll.doClick();
 		}
 		turn.setForeground(game.currentPlayer().getColor());
 		turn.setText(game.currentPlayerName() + "'s turn");
+
+		if (game.isReplay()) {
+			synchronized (game.getThread()) {
+				game.getThread().notify();
+			}
+		}
 	}
 
 	@Override
 	protected void end() {
 		super.end();
 		controller.remove(playAgain);
+		try {
+			client.closeConnection();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public class Client extends AbstractClient {
@@ -152,7 +172,9 @@ public class ClientGameUI extends GamePane {
 				repaint();
 				revalidate();
 				game = (Game) o;
-				if (game.isEnd()) {
+				System.out.println("++++++++++++++++++++++++++++++++++ " + !game.isEnd());
+				System.out.println(((Game) o).getNumPlayer());
+				if (game.getNumPlayer() == -1) {
 					MenuPane menu = new MenuPane();
 					GameUI.setPanel(menu);
 					menu.alert("Another player leave the game");
@@ -179,7 +201,8 @@ public class ClientGameUI extends GamePane {
 				move(game.currentPlayerIndex(), game.currentPlayerPosition(), game.previousPlayerPosition());
 				if (game.currentPlayerWins()) {
 					playerIndex = 0;
-					end();
+					game.end();
+					roll.setVisible(false);
 				}
 			}
 		}
