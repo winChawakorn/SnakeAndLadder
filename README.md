@@ -3,7 +3,7 @@
 **Chawakorn Suphepre(@winChawakorn), Vittunyuta Maeprasart(@aommoaGitHub) and Jiranan Patrathamakul(@jiranan-pat)**
 
 ## *** GAME VERSION HAS RELEASED.  2018/05/18 ***
-<a href="https://github.com/winChawakorn/SnakeAndLadder/blob/master/SnakeAndLadder.jar"> >>>Download this Game</a> Run `SnakeAndLadder.jar`</br></br>
+<a href="https://github.com/winChawakorn/SnakeAndLadder/blob/master/SnakeAndLadder.jar?raw=true"> >>>Download this Game</a> Run `SnakeAndLadder.jar`</br></br>
 
 ## Domain Model:
 ![Domain Model](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/DomainModel-SnakeLadder.jpg)
