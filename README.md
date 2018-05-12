@@ -1,4 +1,4 @@
-#Snakes and Ladders game in JAVA
+# Snakes and Ladders game in JAVA
 ### Author
 **Chawakorn Suphepre(@winChawakorn) and Vittunyuta Maeprasart(@aommoaGitHub)**
 
@@ -6,28 +6,27 @@
 <a href="https://github.com/winChawakorn/TypingThrower/raw/master/TypingThrower.jar"> >>>Download this Game</a> Run `SnakeAndLadder.jar`</br></br>
 
 ## Domain Model:
-![Domain Model](http://i.imgur.com/YAQjAF5.jpg)
+![Domain Model](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/DomainModel-SnakeLadder.jpg)
 
 ## UML Diagram for this project:
-![UML Diagram](http://i.imgur.com/YAQjAF5.jpg)
+![UML Diagram](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/umlDiagram.jpg)
 
 ## Example used Design Patterns
 1. Command Design Pattern
 2. Server/Client Design Pattern
-3.
 
 ## How to play
 
 1. First, you have to choose what play mode you want
-* 2 players
-* 3 players
-* 4 players
-* online - play with another person, to play this mode on of you have to run `GameServer.java` first.<br>
+- 2 players
+- 3 players
+- 4 players
+- online - play with another person, to play this mode on of you have to run `GameServer.java` first.<br>
 
-![Menu Pane](http://i.imgur.com/YAQjAF5.jpg)
+![Menu Pane](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/ManuPane.png)
 
 2. Roll a dice!! Trying to reach 100 square to WIN!!!<br>
-![Game Pane](http://i.imgur.com/YAQjAF5.jpg)
+![Game Pane](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/GamePane.png)
 
 3. Then you can replay the game, go back to choose play mode, or play again (only in offline mode)
-![Win Pane](http://i.imgur.com/YAQjAF5.jpg)
+![Win Pane](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/WinPane.png)
