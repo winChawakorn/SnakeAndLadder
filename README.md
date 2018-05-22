@@ -6,7 +6,7 @@
 <a href="https://github.com/winChawakorn/SnakeAndLadder/blob/master/SnakeAndLadder.jar?raw=true"> >>>Download this Game</a> Run `SnakeAndLadder.jar`</br></br>
 
 ## Domain Model:
-![Domain Model](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/DomainModel-SnakeLadder.jpg)
+![Domain Model](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/DomainModel-SnakeLadder.png)
 
 ## UML Diagram for this project:
 ![UML Diagram](https://github.com/winChawakorn/SnakeAndLadder/blob/master/src/img/umlDiagram.jpg)
